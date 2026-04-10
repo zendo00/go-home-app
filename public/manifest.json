@@ -1,0 +1,41 @@
+{
+  "name": "Go Home",
+  "short_name": "GoHome",
+  "description": "長者極簡導航 App - 一鍵回家",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF50",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/icon.png",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon.png",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["navigation", "lifestyle"],
+  "shortcuts": [
+    {
+      "name": "Go",
+      "short_name": "Go",
+      "description": "前往目的地",
+      "url": "/?action=go",
+      "icons": [{ "src": "/icons/icon.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Home",
+      "short_name": "Home",
+      "description": "回家",
+      "url": "/?action=home",
+      "icons": [{ "src": "/icons/icon.png", "sizes": "96x96" }]
+    }
+  ]
+}
