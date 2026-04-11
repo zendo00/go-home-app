@@ -11,8 +11,8 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 pb-20">
-        <GoButton />
-        <HomeButton />
+        <GoButton onClick={() => alert('GO 按鈕點擊 - 功能開發中')} />
+        <HomeButton onClick={() => alert('HOME 按鈕點擊 - 功能開發中')} />
       </main>
 
       {/* Bottom Navigation */}
