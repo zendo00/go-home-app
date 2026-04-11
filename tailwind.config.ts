@@ -8,16 +8,18 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["'Work Sans'", "sans-serif"],
+      },
       colors: {
         goBlue: "#3F51B5",
         homeGreen: "#4CAF50",
         headerGreen: "#4CAF50",
         navBlack: "#1a1a1a",
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        navBorder: "#f5f5f5",
       },
-      fontFamily: {
-        sans: ["Noto Sans SC", "PingFang HK", "Microsoft YaHei", "sans-serif"],
+      clipPath: {
+        "rounded-arrow-right": "polygon(0% 0%, 82% 0%, 100% 50%, 82% 100%, 0% 100%, 0% 0%)",
       },
     },
   },

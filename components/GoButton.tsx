@@ -1,29 +1,30 @@
-'use client';
-
-export default function GoButton() {
+export default function GoButton({ onClick }: { onClick: () => void }) {
   return (
     <button
-      onClick={() => alert('GO 功能：請在階段 2 開發')}
-      className="relative w-[85%] max-w-[340px] h-[110px] bg-[#3F51B5] flex items-center justify-center mx-auto my-6 hover:opacity-90 active:scale-95 transition-all shadow-lg"
+      onClick={onClick}
+      className="relative w-[85%] max-w-[340px] h-[110px] bg-goBlue text-white flex items-center justify-start pl-6 overflow-hidden shadow-lg active:scale-95 transition-transform"
       style={{
-        clipPath: 'polygon(0% 0%, 82% 0%, 100% 50%, 82% 100%, 0% 100%)',
+        clipPath: "polygon(0% 0%, 82% 0%, 100% 50%, 82% 100%, 0% 100%)",
+        borderRadius: "12px 0 0 12px",
       }}
     >
-      {/* 白色箭頭圖示 - TODO: Replace with user-provided Logo/Icon */}
-      <svg
-        width="48"
-        height="48"
-        viewBox="0 0 24 24"
-        fill="white"
-        xmlns="http://www.w3.org/2000/svg"
-        className="ml-6 flex-shrink-0"
+      {/* Arrow Icon (SVG) */}
+      <svg 
+        width="48" 
+        height="48" 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        className="text-white ml-2 flex-shrink-0"
       >
-        <path d="M8 5V9L16.5 12L8 15V19L20 12L8 5Z" />
+        <path 
+          d="M5 12H19M19 12L12 5M19 12L12 19" 
+          stroke="currentColor" 
+          strokeWidth="2.5" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+        />
       </svg>
-      {/* GO 文字 - 字體大小調整為 36px，符合長者需求 */}
-      <span className="text-[36px] font-bold text-white ml-4 tracking-wide">
-        GO
-      </span>
+      <span className="text-3xl font-bold ml-4">GO</span>
     </button>
   );
 }
