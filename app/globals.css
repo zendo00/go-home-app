@@ -10,7 +10,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-noto-sans-sc), "PingFang HK", "Microsoft YaHei", Arial, Helvetica, sans-serif;
+  font-family: var(--font-work-sans), "PingFang HK", "Microsoft YaHei", Arial, Helvetica, sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -18,6 +18,22 @@ body {
 * {
   -webkit-user-select: none;
   user-select: none;
+}
+
+/* PWA 安裝提示動畫 */
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
 }
 
 /* 按鈕可選取 */

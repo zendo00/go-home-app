@@ -1,37 +1,110 @@
-export default function HomeButton({ onClick }: { onClick: () => void }) {
+'use client';
+
+import { useState, useEffect } from 'react';
+import { cn } from "@/lib/utils";
+import AddressModal from './AddressModal';
+import HomeOptionsModal from './HomeOptionsModal';
+import { Locale, t } from '@/locales';
+
+interface HomeButtonProps {
+  locale: Locale;
+}
+
+export default function HomeButton({ locale }: HomeButtonProps) {
+  const [showAddressModal, setShowAddressModal] = useState(false);
+  const [showOptionsModal, setShowOptionsModal] = useState(false);
+  const [homeAddress, setHomeAddress] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('home_address');
+      setHomeAddress(saved);
+    }
+  }, []);
+
+  const navigateHome = (mode: string) => {
+    if (!homeAddress) {
+      setShowAddressModal(true);
+      return;
+    }
+    
+    let travelMode = 'driving';
+    if (mode === 'transit') travelMode = 'transit';
+    if (mode === 'walking') travelMode = 'walking';
+
+    const encodedDestination = encodeURIComponent(homeAddress);
+    
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${encodedDestination}&travelmode=${travelMode}`;
+    
+    window.location.href = url;
+  };
+
+  const handleAddressConfirm = (address: string) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('home_address', address);
+      setHomeAddress(address);
+    }
+    setShowAddressModal(false);
+  };
+
+  const handleOptionsConfirm = (mode: string) => {
+    navigateHome(mode);
+  };
+
   return (
-    <button
-      onClick={onClick}
-      className="relative w-[85%] max-w-[340px] h-[110px] bg-homeGreen text-white flex items-center justify-start pl-6 overflow-hidden shadow-lg active:scale-95 transition-transform"
-      style={{
-        clipPath: "polygon(0% 0%, 82% 0%, 100% 50%, 82% 100%, 0% 100%)",
-        borderRadius: "12px 0 0 12px",
-      }}
-    >
-      {/* Home Icon (SVG) */}
-      <svg 
-        width="48" 
-        height="48" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        className="text-white ml-2 flex-shrink-0"
+    <>
+      <button
+        className="relative w-[90%] max-w-[400px] h-[140px] group focus:outline-none mx-auto"
+        onClick={() => setShowOptionsModal(true)}
+        aria-label="HOME"
       >
-        <path 
-          d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" 
-          stroke="currentColor" 
-          strokeWidth="2" 
-          strokeLinecap="round" 
-          strokeLinejoin="round"
-        />
-        <path 
-          d="M9 22V12H15V22" 
-          stroke="currentColor" 
-          strokeWidth="2" 
-          strokeLinecap="round" 
-          strokeLinejoin="round"
-        />
-      </svg>
-      <span className="text-3xl font-bold ml-4">HOME</span>
-    </button>
+        <svg
+          viewBox="0 0 400 180"
+          className="w-full h-full"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <path
+            d="M 50 0 L 300 0 L 370 90 L 300 180 L 50 180 Q 20 180 20 150 L 20 30 Q 20 0 50 0 Z"
+            className={cn(
+              "fill-[#4CAF50]",
+              "transition-all duration-200",
+              "group-hover:brightness-110",
+              "group-active:brightness-90"
+            )}
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-start pl-[15%]">
+          {/* 白色房屋圖標 - 縮細 */}
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="white"
+            className="mr-2"
+          >
+            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+          </svg>
+          {/* HOME 文字 - 縮細 */}
+          <span className="text-4xl font-bold text-white tracking-wide">
+            HOME
+          </span>
+        </div>
+      </button>
+
+      <HomeOptionsModal
+        isOpen={showOptionsModal}
+        onClose={() => setShowOptionsModal(false)}
+        onConfirm={handleOptionsConfirm}
+        locale={locale}
+      />
+
+      <AddressModal
+        isOpen={showAddressModal}
+        onClose={() => setShowAddressModal(false)}
+        onConfirm={handleAddressConfirm}
+        title={t('modal.setHome', locale)}
+        placeholder={locale === 'en' ? 'e.g., 12th Floor, ICC, Central' : locale === 'zh-CN' ? '例如：中环国际金融中心' : '例如：中環國際金融中心'}
+      />
+    </>
   );
 }

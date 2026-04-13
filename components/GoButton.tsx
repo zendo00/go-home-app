@@ -1,30 +1,74 @@
-export default function GoButton({ onClick }: { onClick: () => void }) {
+'use client';
+
+import { useState, useEffect } from 'react';
+import { cn } from "@/lib/utils";
+import AddressModal from './AddressModal';
+import { Locale, t } from '@/locales';
+
+interface GoButtonProps {
+  locale: Locale;
+}
+
+export default function GoButton({ locale }: GoButtonProps) {
+  const [showModal, setShowModal] = useState(false);
+
+  const handleConfirm = (address: string) => {
+    setShowModal(false);
+    const encodedAddress = encodeURIComponent(address);
+    // 直接導航到目的地，不保存地址，不顯示 Toast
+    window.location.href = `geo:0,0?q=${encodedAddress}`;
+  };
+
   return (
-    <button
-      onClick={onClick}
-      className="relative w-[85%] max-w-[340px] h-[110px] bg-goBlue text-white flex items-center justify-start pl-6 overflow-hidden shadow-lg active:scale-95 transition-transform"
-      style={{
-        clipPath: "polygon(0% 0%, 82% 0%, 100% 50%, 82% 100%, 0% 100%)",
-        borderRadius: "12px 0 0 12px",
-      }}
-    >
-      {/* Arrow Icon (SVG) */}
-      <svg 
-        width="48" 
-        height="48" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        className="text-white ml-2 flex-shrink-0"
+    <>
+      <button
+        className="relative w-[90%] max-w-[400px] h-[140px] group focus:outline-none mx-auto"
+        onClick={() => setShowModal(true)}
+        aria-label="GO"
       >
-        <path 
-          d="M5 12H19M19 12L12 5M19 12L12 19" 
-          stroke="currentColor" 
-          strokeWidth="2.5" 
-          strokeLinecap="round" 
-          strokeLinejoin="round"
-        />
-      </svg>
-      <span className="text-3xl font-bold ml-4">GO</span>
-    </button>
+        {/* 箭頭形狀背景 - 調整為視覺平衡的對稱設計 */}
+        <svg
+          viewBox="0 0 400 180"
+          className="w-full h-full"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <path
+            d="M 50 0 L 300 0 L 370 90 L 300 180 L 50 180 Q 20 180 20 150 L 20 30 Q 20 0 50 0 Z"
+            className={cn(
+              "fill-[#3F51B5]",
+              "transition-all duration-200",
+              "group-hover:brightness-110",
+              "group-active:brightness-90"
+            )}
+          />
+        </svg>
+        {/* 內容 - 手動調整偏移以在箭頭形狀中居中 */}
+        <div className="absolute inset-0 flex items-center justify-start pl-[15%]">
+          {/* 白色三角形箭頭 - 縮細 */}
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="white"
+          >
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          {/* GO 文字 - 縮細 */}
+          <span className="text-4xl font-bold text-white tracking-wide ml-2">
+            GO
+          </span>
+        </div>
+      </button>
+
+      {/* Go 按鈕使用獨立的 Modal，標題為「請輸入目的地」，無預覽 */}
+      <AddressModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onConfirm={handleConfirm}
+        title={t('modal.destination', locale)}
+        showPreview={false}
+        isGoButton={true}
+      />
+    </>
   );
 }
