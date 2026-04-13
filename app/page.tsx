@@ -12,7 +12,7 @@ import { Locale, languages, t } from '@/locales';
 // ==================== Settings 視圖組件 ====================
 function SettingsView({ onNavigate }: { onNavigate: (view: 'home' | 'settings') => void }) {
   const [homeAddress, setHomeAddress] = useState<string>('');
-  const [fontSize, setFontSize] = useState<Locale>('medium');
+  const [fontSize, setFontSize] = useState<'small' | 'medium' | 'large'>('medium');
   const [locale, setLocale] = useState<Locale>('zh-HK');
   const [isSaved, setIsSaved] = useState(false);
   const [isClient, setIsClient] = useState(false);
