@@ -66,8 +66,10 @@ export default function GoButton({ locale }: GoButtonProps) {
         onClose={() => setShowModal(false)}
         onConfirm={handleConfirm}
         title={t('modal.destination', locale)}
+        placeholder={locale === 'en' ? 'Enter your destination (e.g., 12th Floor, ICC, Central)' : locale === 'zh-CN' ? '输入你的目的地（例如：中环国际金融中心）' : '輸入你的目的地（例如：中環國際金融中心）'}
         showPreview={false}
         isGoButton={true}
+        locale={locale}
       />
     </>
   );

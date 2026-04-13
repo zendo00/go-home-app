@@ -36,6 +36,11 @@ export const translations = {
     'modal.destination': '請輸入目的地',
     'modal.departure': '出發',
     'modal.setHome': '設定住家地址',
+    'modal.close': '關閉',
+    'modal.saveAddress': '儲存地址',
+    'modal.saveSuccess': '儲存成功',
+    'modal.preview': '預覽：',
+    'modal.go': '出發',
     
     // Legal
     'legal.companyName': 'Zendo Holdings Limited',
@@ -76,6 +81,11 @@ export const translations = {
     'modal.destination': '请输入目的地',
     'modal.departure': '出发',
     'modal.setHome': '设定家庭地址',
+    'modal.close': '关闭',
+    'modal.saveAddress': '保存地址',
+    'modal.saveSuccess': '保存成功',
+    'modal.preview': '预览：',
+    'modal.go': '出发',
     
     'legal.companyName': 'Zendo Holdings Limited',
     'legal.copyright': '版权所有',
@@ -115,6 +125,11 @@ export const translations = {
     'modal.destination': 'Enter Destination',
     'modal.departure': 'Go',
     'modal.setHome': 'Set Home Address',
+    'modal.close': 'Close',
+    'modal.saveAddress': 'Save Address',
+    'modal.saveSuccess': 'Saved Successfully',
+    'modal.preview': 'Preview:',
+    'modal.go': 'Go',
     
     'legal.companyName': 'Zendo Holdings Limited',
     'legal.copyright': 'All Rights Reserved',

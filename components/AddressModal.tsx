@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Locale, t } from '@/locales';
 
 interface AddressModalProps {
   isOpen: boolean;
@@ -8,18 +9,20 @@ interface AddressModalProps {
   onConfirm: (address: string) => void;
   title?: string;
   placeholder?: string;
-  showPreview?: boolean; // 是否顯示預覽文字（Go 按鈕不顯示）
-  isGoButton?: boolean; // 是否為 Go 按鈕（直接跳轉，不顯示成功狀態）
+  showPreview?: boolean;
+  isGoButton?: boolean;
+  locale?: Locale;
 }
 
 export default function AddressModal({
   isOpen,
   onClose,
   onConfirm,
-  title = '設定住家地址',
-  placeholder = '輸入你的屋企地址...（例如：中環國際金融中心 12 樓 123 室）',
+  title,
+  placeholder,
   showPreview = true,
   isGoButton = false,
+  locale = 'zh-HK',
 }: AddressModalProps) {
   const [inputValue, setInputValue] = useState('');
   const [isSaved, setIsSaved] = useState(false);
@@ -92,7 +95,7 @@ export default function AddressModal({
           {/* 預覽 - 只在非 Go 按鈕時顯示 */}
           {showPreview && inputValue.trim() && (
             <p className="mt-2 text-sm text-gray-600">
-              <span className="font-medium">預覽：</span>
+              <span className="font-medium">{t('modal.preview', locale)}</span>
               {inputValue.trim()}
             </p>
           )}
@@ -108,16 +111,16 @@ export default function AddressModal({
             }`}
           >
             {isGoButton ? (
-              '出發'
+              t('modal.go', locale)
             ) : isSaved ? (
               <>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                   <path d="M20 6L9 17l-5-5" />
                 </svg>
-                儲存成功
+                {t('modal.saveSuccess', locale)}
               </>
             ) : (
-              title?.includes('目的地') ? '出發' : '儲存地址'
+              title?.includes(t('modal.destination', locale)) ? t('modal.go', locale) : t('modal.saveAddress', locale)
             )}
           </button>
         </div>

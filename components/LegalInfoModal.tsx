@@ -209,7 +209,7 @@ export default function LegalInfoModal({ isOpen, onClose, type, locale }: LegalI
             onClick={onClose}
             className="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-xl transition-colors"
           >
-            關閉
+            {t('modal.close', locale)}
           </button>
         </div>
       </div>
