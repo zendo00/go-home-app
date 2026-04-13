@@ -42,8 +42,8 @@ export default function GoButton({ locale }: GoButtonProps) {
             )}
           />
         </svg>
-        {/* 內容 - 手動調整偏移以在箭頭形狀中居中 */}
-        <div className="absolute inset-0 flex items-center justify-start pl-[15%]">
+        {/* 內容 - 調整偏移以在箭頭形狀中視覺居中 */}
+        <div className="absolute inset-0 flex items-center justify-start pl-[10%]">
           {/* 白色三角形箭頭 - 縮細 */}
           <svg
             width="48"
