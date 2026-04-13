@@ -73,7 +73,7 @@ export default function HomeButton({ locale }: HomeButtonProps) {
             )}
           />
         </svg>
-        <div className="absolute inset-0 flex items-center justify-center pl-[8%]">
+        <div className="absolute inset-0 flex items-center justify-center pl-[15%]">
           {/* 白色房屋圖標 - 縮細 */}
           <svg
             width="48"

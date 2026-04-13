@@ -42,8 +42,8 @@ export default function GoButton({ locale }: GoButtonProps) {
             )}
           />
         </svg>
-        {/* 內容 - 使用 justify-center + pl-[8%] 對齊到箭頭視覺中心 */}
-        <div className="absolute inset-0 flex items-center justify-center pl-[8%]">
+        {/* 內容 - 使用 justify-center + pl-[15%] 向左移動，對齊到箭頭視覺中心 */}
+        <div className="absolute inset-0 flex items-center justify-center pl-[15%]">
           {/* 白色三角形箭頭 - 縮細 */}
           <svg
             width="48"
