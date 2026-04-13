@@ -22,7 +22,7 @@ function SettingsView({ onNavigate }: { onNavigate: (view: 'home' | 'settings') 
   useEffect(() => {
     setIsClient(true);
     const savedAddress = localStorage.getItem('homeAddress') ?? '';
-    const savedFontSize = (localStorage.getItem('fontSize') as Locale) ?? 'medium';
+    const savedFontSize = (localStorage.getItem('fontSize') as 'small' | 'medium' | 'large') ?? 'medium';
     const savedLocale = (localStorage.getItem('locale') as Locale) ?? 'zh-HK';
     
     setHomeAddress(savedAddress);
@@ -44,7 +44,7 @@ function SettingsView({ onNavigate }: { onNavigate: (view: 'home' | 'settings') 
   };
 
   const handleFontSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value as Locale;
+    const value = e.target.value as 'small' | 'medium' | 'large';
     setFontSize(value);
     localStorage.setItem('fontSize', value);
   };
