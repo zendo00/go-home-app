@@ -51,9 +51,11 @@ export const translations = {
     'legal.aboutTitle': '關於 Go Home',
     
     // Menu
+    'menu.goMenu': 'Go 選單',
     'menu.savedLocations': '常用地點',
     'menu.manageLocations': '新增地點',
     'menu.enterDestination': '輸入地址',
+    'menu.editLocations': '編輯地點',
     'menu.noSavedLocations': '暫無常用地點',
     'menu.goManageToAdd': '前往「新增地點」添加',
     'menu.noLocationsToManage': '暫無地點可管理',
@@ -119,9 +121,11 @@ export const translations = {
     'legal.aboutTitle': '关于 Go Home',
     
     // Menu
+    'menu.goMenu': 'Go Menu',
     'menu.savedLocations': 'Saved Locations',
     'menu.manageLocations': 'Add Location',
     'menu.enterDestination': 'Enter Address',
+    'menu.editLocations': 'Edit Location',
     'menu.noSavedLocations': 'No saved locations',
     'menu.goManageToAdd': 'Go to "Add Location" to add',
     'menu.noLocationsToManage': 'No locations to manage',
@@ -187,9 +191,11 @@ export const translations = {
     'legal.aboutTitle': 'About Go Home',
     
     // Menu
+    'menu.goMenu': 'Go Menu',
     'menu.savedLocations': '常用地點',
     'menu.manageLocations': '新增地點',
     'menu.enterDestination': '輸入地址',
+    'menu.editLocations': '編輯地點',
     'menu.noSavedLocations': '暫無常用地點',
     'menu.goManageToAdd': '前往「新增地點」添加',
     'menu.noLocationsToManage': '暫無地點可管理',

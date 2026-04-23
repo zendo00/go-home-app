@@ -1,0 +1,127 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Locale, t } from '@/locales';
+
+interface Location {
+  id: string;
+  label: string;
+  address: string;
+}
+
+interface SavedLocationsViewProps {
+  locale: Locale;
+  onLocationSelect: (address: string) => void;
+  onBack: () => void;
+  onManage: () => void;
+}
+
+export default function SavedLocationsView({ locale, onLocationSelect, onBack, onManage }: SavedLocationsViewProps) {
+  const [locations, setLocations] = useState<Location[]>([]);
+
+  useEffect(() => {
+    loadLocations();
+  }, []);
+
+  const loadLocations = () => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('savedLocations');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved) as Location[];
+          setLocations(parsed);
+        } catch (e) {
+          console.error('Failed to parse saved locations:', e);
+          setLocations([]);
+        }
+      } else {
+        setLocations([]);
+      }
+    }
+  };
+
+  const handleLocationClick = (location: Location) => {
+    onLocationSelect(location.address);
+  };
+
+  if (locations.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-white">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="mb-4 opacity-50">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+          <circle cx="12" cy="10" r="3" />
+        </svg>
+        <p className="text-lg mb-2">{t('menu.noSavedLocations', locale)}</p>
+        <p className="text-sm opacity-75 mb-6">{t('menu.goManageToAdd', locale)}</p>
+        <button
+          onClick={onManage}
+          className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-xl text-white font-bold text-xl transition-all duration-200 active:scale-95 shadow-lg"
+        >
+          {t('menu.manageLocations', locale)}
+        </button>
+        <button
+          onClick={onBack}
+          className="mt-4 px-8 py-4 bg-white/10 hover:bg-white/20 rounded-xl text-white font-bold text-xl transition-all duration-200 active:scale-95"
+        >
+          {t('common.back', locale)}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Back Button */}
+      <button
+        onClick={onBack}
+        className="w-full flex items-center gap-3 text-white/70 hover:text-white transition-colors mb-4 py-3"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        <span className="text-xl font-bold">{t('common.back', locale)}</span>
+      </button>
+
+      {/* Locations List */}
+      <div className="space-y-3">
+        {locations.map((location) => (
+          <button
+            key={location.id}
+            onClick={() => handleLocationClick(location)}
+            className="w-full text-left bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 active:from-blue-800 active:to-blue-900 rounded-xl p-5 transition-all duration-200 group shadow-lg"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 mt-1">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-xl font-bold text-white mb-1">
+                  {location.label}
+                </h3>
+                <p className="text-base text-white/80 line-clamp-2">
+                  {location.address}
+                </p>
+              </div>
+              <div className="flex-shrink-0 self-center">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="group-hover:translate-x-1 transition-transform">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {/* Manage Button */}
+      <button
+        onClick={onManage}
+        className="w-full mt-4 px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 rounded-xl text-white font-bold text-xl transition-all duration-200 active:scale-95 shadow-lg"
+      >
+        {t('menu.manageLocations', locale)}
+      </button>
+    </div>
+  );
+}
