@@ -22,7 +22,7 @@ export default function MainMenuView({ locale, onNavigate, onClose }: MainMenuVi
   };
 
   return (
-    <div className="bg-white rounded-3xl p-8 w-full shadow-2xl">
+    <>
       <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center">
         出發
       </h2>
@@ -46,6 +46,6 @@ export default function MainMenuView({ locale, onNavigate, onClose }: MainMenuVi
       >
         取消
       </button>
-    </div>
+    </>
   );
 }
