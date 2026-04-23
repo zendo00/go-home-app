@@ -125,7 +125,8 @@ export default function ManageLocations({ locale, onBack }: ManageLocationsProps
   };
 
   const handleBack = () => {
-    loadLocations(); // 重置
+    setEditingId(null); // 重置編輯狀態
+    loadLocations(); // 重置列表
     onBack();
   };
 

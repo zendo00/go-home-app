@@ -54,7 +54,7 @@ export const translations = {
     'menu.savedLocations': '常用地點',
     'menu.manageLocations': '新增地點',
     'menu.enterDestination': '輸入地址',
-    'menu.noSavedLocations': '暫存常用地點',
+    'menu.noSavedLocations': '暫無常用地點',
     'menu.goManageToAdd': '前往「新增地點」添加',
     'menu.noLocationsToManage': '暫無地點可管理',
     'menu.confirmDelete': '確定要刪除此地點嗎？',
@@ -120,10 +120,10 @@ export const translations = {
     
     // Menu
     'menu.savedLocations': 'Saved Locations',
-    'menu.manageLocations': 'Manage Locations',
-    'menu.enterDestination': 'Enter Destination',
+    'menu.manageLocations': 'Add Location',
+    'menu.enterDestination': 'Enter Address',
     'menu.noSavedLocations': 'No saved locations',
-    'menu.goManageToAdd': 'Go to "Manage Locations" to add',
+    'menu.goManageToAdd': 'Go to "Add Location" to add',
     'menu.noLocationsToManage': 'No locations to manage',
     'menu.confirmDelete': 'Are you sure you want to delete this location?',
     'menu.dragToReorder': 'Drag items to reorder',
@@ -188,10 +188,10 @@ export const translations = {
     
     // Menu
     'menu.savedLocations': '常用地點',
-    'menu.manageLocations': '管理地點',
+    'menu.manageLocations': '新增地點',
     'menu.enterDestination': '輸入地址',
-    'menu.noSavedLocations': '暫存常用地點',
-    'menu.goManageToAdd': '前往「管理地點」添加',
+    'menu.noSavedLocations': '暫無常用地點',
+    'menu.goManageToAdd': '前往「新增地點」添加',
     'menu.noLocationsToManage': '暫無地點可管理',
     'menu.confirmDelete': '確定要刪除此地點嗎？',
     'menu.dragToReorder': '拖拽項目以重新排序',

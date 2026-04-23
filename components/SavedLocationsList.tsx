@@ -12,9 +12,10 @@ interface Location {
 interface SavedLocationsListProps {
   locale: Locale;
   onLocationSelect: (address: string) => void;
+  onBack: () => void;
 }
 
-export default function SavedLocationsList({ locale, onLocationSelect }: SavedLocationsListProps) {
+export default function SavedLocationsList({ locale, onLocationSelect, onBack }: SavedLocationsListProps) {
   const [locations, setLocations] = useState<Location[]>([]);
 
   useEffect(() => {
@@ -51,12 +52,30 @@ export default function SavedLocationsList({ locale, onLocationSelect }: SavedLo
         </svg>
         <p className="text-lg">{t('menu.noSavedLocations', locale)}</p>
         <p className="text-sm mt-2 opacity-75">{t('menu.goManageToAdd', locale)}</p>
+        <button
+          onClick={onBack}
+          className="mt-6 px-6 py-3 bg-gray-200 hover:bg-gray-300 rounded-lg text-gray-700 font-medium transition-colors"
+          style={{ minHeight: '50px' }}
+        >
+          {t('common.back', locale)}
+        </button>
       </div>
     );
   }
 
   return (
     <div className="space-y-3">
+      {/* 返回按鈕 */}
+      <button
+        onClick={onBack}
+        className="w-full flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-4"
+        style={{ minHeight: '40px' }}
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        <span className="text-lg font-medium">{t('common.back', locale)}</span>
+      </button>
       {locations.map((location) => (
         <button
           key={location.id}

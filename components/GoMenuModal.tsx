@@ -12,15 +12,15 @@ interface GoMenuModalProps {
   locale: Locale;
 }
 
-type MenuView = 'saved' | 'manage' | 'enter';
+type MenuView = 'menu' | 'saved' | 'manage' | 'enter';
 
 export default function GoMenuModal({ isOpen, onClose, locale }: GoMenuModalProps) {
-  const [currentView, setCurrentView] = useState<MenuView>('saved');
+  const [currentView, setCurrentView] = useState<MenuView>('menu');
 
   // 重置視圖當模態框打開/關閉
   useEffect(() => {
     if (!isOpen) {
-      setCurrentView('saved');
+      setCurrentView('menu');
     }
   }, [isOpen]);
 
@@ -48,6 +48,7 @@ export default function GoMenuModal({ isOpen, onClose, locale }: GoMenuModalProp
         {/* Header */}
         <div className="px-5 pt-5 pb-3 flex items-center justify-between border-b border-gray-200">
           <h2 className="text-xl font-bold text-gray-900">
+            {currentView === 'menu' && '選擇模式'}
             {currentView === 'saved' && t('menu.savedLocations', locale)}
             {currentView === 'manage' && t('menu.manageLocations', locale)}
             {currentView === 'enter' && t('menu.enterDestination', locale)}
@@ -65,23 +66,53 @@ export default function GoMenuModal({ isOpen, onClose, locale }: GoMenuModalProp
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-5">
+          {/* Main Menu */}
+          {currentView === 'menu' && (
+            <div className="flex flex-col gap-6">
+              <button
+                onClick={() => setCurrentView('saved')}
+                className="w-full h-[120px] bg-blue-600 hover:bg-blue-500 text-white text-2xl font-bold rounded-lg shadow-lg transition-colors"
+              >
+                {t('menu.savedLocations', locale)}
+              </button>
+              <button
+                onClick={() => setCurrentView('manage')}
+                className="w-full h-[120px] bg-green-600 hover:bg-green-500 text-white text-2xl font-bold rounded-lg shadow-lg transition-colors"
+              >
+                {t('menu.manageLocations', locale)}
+              </button>
+              <button
+                onClick={() => setCurrentView('enter')}
+                className="w-full h-[120px] bg-purple-600 hover:bg-purple-500 text-white text-2xl font-bold rounded-lg shadow-lg transition-colors"
+              >
+                {t('menu.enterDestination', locale)}
+              </button>
+            </div>
+          )}
+          
+          {/* Saved Locations View */}
           {currentView === 'saved' && (
             <SavedLocationsList
               locale={locale}
               onLocationSelect={handleLocationSelect}
+              onBack={() => setCurrentView('menu')}
             />
           )}
+          
+          {/* Manage Locations View */}
           {currentView === 'manage' && (
             <ManageLocations
               locale={locale}
-              onBack={() => setCurrentView('saved')}
+              onBack={() => setCurrentView('menu')}
             />
           )}
+          
+          {/* Enter Destination View */}
           {currentView === 'enter' && (
             <LocationForm
               locale={locale}
               onSubmit={handleEnterDestination}
-              onCancel={() => setCurrentView('saved')}
+              onCancel={() => setCurrentView('menu')}
             />
           )}
         </div>
