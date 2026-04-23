@@ -52,6 +52,7 @@ export default function GoMenuModal({ isOpen, onClose, locale }: GoMenuModalProp
           <SavedLocationsView
             locale={locale}
             onBack={() => setCurrentView('main')}
+            onManage={() => setCurrentView('manage')}
           />
         );
       case 'manage':

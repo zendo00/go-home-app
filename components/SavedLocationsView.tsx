@@ -14,6 +14,7 @@ interface Location {
 interface SavedLocationsViewProps {
   locale: Locale;
   onBack: () => void;
+  onManage?: () => void;
 }
 
 // Accent color palette for top borders (Hex codes for inline styles)
@@ -35,7 +36,7 @@ const getAccentColor = (index: number): string => {
 
 
 
-export default function SavedLocationsView({ locale, onBack }: SavedLocationsViewProps) {
+export default function SavedLocationsView({ locale, onBack, onManage }: SavedLocationsViewProps) {
   const [locations, setLocations] = useState<Location[]>([]);
 
   useEffect(() => {
@@ -81,9 +82,21 @@ export default function SavedLocationsView({ locale, onBack }: SavedLocationsVie
       <div className="flex flex-col items-center justify-center py-12 text-gray-900">
         <IconPin className="w-16 h-16 text-gray-400 mb-4 opacity-50" />
         <p className="text-lg mb-2">{t('menu.noSavedLocations', locale)}</p>
+        <p className="text-sm text-gray-500 mb-6">{t('menu.goManageToAdd', locale)}</p>
+        
+        {/* NEW: Add New Button */}
+        {onManage && (
+          <button
+            onClick={onManage}
+            className="w-full max-w-xs bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold py-4 px-6 text-xl transition-all duration-200 active:scale-95 shadow-lg mb-4"
+          >
+            新增地點
+          </button>
+        )}
+        
         <button
           onClick={onBack}
-          className="mt-4 px-8 py-4 bg-gray-200 hover:bg-gray-300 rounded-xl text-gray-900 font-bold text-xl transition-all duration-200 active:scale-95"
+          className="w-full max-w-xs bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-xl font-bold py-4 px-6 text-xl transition-all duration-200 active:scale-95"
         >
           {t('common.back', locale)}
         </button>
