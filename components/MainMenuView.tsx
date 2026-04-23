@@ -5,120 +5,46 @@ import { Locale, t } from '@/locales';
 interface MainMenuViewProps {
   locale: Locale;
   onNavigate: (view: 'main' | 'saved' | 'manage' | 'direct') => void;
+  onClose: () => void;
 }
 
-export default function MainMenuView({ locale, onNavigate }: MainMenuViewProps) {
+export default function MainMenuView({ locale, onNavigate, onClose }: MainMenuViewProps) {
+  const options = [
+    { view: 'saved' as const, icon: '📍', color: 'bg-blue-600' },
+    { view: 'manage' as const, icon: '➕', color: 'bg-green-600' },
+    { view: 'direct' as const, icon: '✏️', color: 'bg-orange-500' },
+  ];
+
+  const getLabel = (view: string) => {
+    if (view === 'saved') return t('menu.savedLocations', locale);
+    if (view === 'manage') return t('menu.manageLocations', locale);
+    return t('menu.enterDestination', locale);
+  };
+
   return (
-    <div className="flex flex-col gap-6 px-4">
-      {/* 常用地點 - 常用地點 */}
-      <button
-        onClick={() => onNavigate('saved')}
-        className="relative w-[90%] max-w-[400px] h-[140px] group focus:outline-none mx-auto"
-        aria-label={t('menu.savedLocations', locale)}
-      >
-        {/* 箭頭形狀背景 */}
-        <svg
-          viewBox="0 0 400 180"
-          className="w-full h-full"
-          preserveAspectRatio="xMidYMid meet"
-        >
-          <path
-            d="M 50 0 L 300 0 L 370 90 L 300 180 L 50 180 Q 20 180 20 150 L 20 30 Q 20 0 50 0 Z"
-            className={
-              "fill-[#3F51B5] transition-all duration-200 group-hover:brightness-110 group-active:brightness-90"
-            }
-          />
-        </svg>
-        {/* 內容 - 使用 justify-start + pl-[25%] 精確對齊 */}
-        <div className="absolute inset-0 flex items-center justify-start pl-[25%]">
-          {/* 白色三角形箭頭 */}
-          <svg
-            width="48"
-            height="48"
-            viewBox="0 0 24 24"
-            fill="white"
-          >
-            <path d="M8 5v14l11-7z" />
-          </svg>
-          {/* 文字 */}
-          <span className="text-4xl font-bold text-white tracking-wide ml-2">
-            {t('menu.savedLocations', locale)}
-          </span>
-        </div>
-      </button>
+    <div className="bg-white rounded-3xl p-8 w-full shadow-2xl">
+      <h2 className="text-4xl font-bold text-gray-900 mb-8 text-center">
+        出發
+      </h2>
 
-      {/* 新增地點 */}
-      <button
-        onClick={() => onNavigate('manage')}
-        className="relative w-[90%] max-w-[400px] h-[140px] group focus:outline-none mx-auto"
-        aria-label={t('menu.manageLocations', locale)}
-      >
-        {/* 箭頭形狀背景 */}
-        <svg
-          viewBox="0 0 400 180"
-          className="w-full h-full"
-          preserveAspectRatio="xMidYMid meet"
-        >
-          <path
-            d="M 50 0 L 300 0 L 370 90 L 300 180 L 50 180 Q 20 180 20 150 L 20 30 Q 20 0 50 0 Z"
-            className={
-              "fill-[#4CAF50] transition-all duration-200 group-hover:brightness-110 group-active:brightness-90"
-            }
-          />
-        </svg>
-        {/* 內容 - 使用 justify-start + pl-[25%] 精確對齊 */}
-        <div className="absolute inset-0 flex items-center justify-start pl-[25%]">
-          {/* 白色圖標 */}
-          <svg
-            width="48"
-            height="48"
-            viewBox="0 0 24 24"
-            fill="white"
+      <div className="flex flex-col gap-5">
+        {options.map((opt) => (
+          <button
+            key={opt.view}
+            className={`w-full h-28 ${opt.color} hover:brightness-110 active:brightness-90 text-white rounded-2xl flex items-center justify-center gap-5 transition-all active:scale-[0.98]`}
+            onClick={() => onNavigate(opt.view)}
           >
-            <path d="M12 20v-6M6 20V10M18 20V4" />
-          </svg>
-          {/* 文字 */}
-          <span className="text-4xl font-bold text-white tracking-wide ml-2">
-            {t('menu.manageLocations', locale)}
-          </span>
-        </div>
-      </button>
+            <span className="text-5xl">{opt.icon}</span>
+            <span className="text-4xl font-bold">{getLabel(opt.view)}</span>
+          </button>
+        ))}
+      </div>
 
-      {/* 輸入地址 */}
       <button
-        onClick={() => onNavigate('direct')}
-        className="relative w-[90%] max-w-[400px] h-[140px] group focus:outline-none mx-auto"
-        aria-label={t('menu.enterDestination', locale)}
+        className="w-full h-16 mt-6 bg-gray-200 hover:bg-gray-300 active:bg-gray-400 text-gray-900 text-3xl font-bold rounded-2xl transition-colors"
+        onClick={onClose}
       >
-        {/* 箭頭形狀背景 */}
-        <svg
-          viewBox="0 0 400 180"
-          className="w-full h-full"
-          preserveAspectRatio="xMidYMid meet"
-        >
-          <path
-            d="M 50 0 L 300 0 L 370 90 L 300 180 L 50 180 Q 20 180 20 150 L 20 30 Q 20 0 50 0 Z"
-            className={
-              "fill-[#9C27B0] transition-all duration-200 group-hover:brightness-110 group-active:brightness-90"
-            }
-          />
-        </svg>
-        {/* 內容 - 使用 justify-start + pl-[25%] 精確對齊 */}
-        <div className="absolute inset-0 flex items-center justify-start pl-[25%]">
-          {/* 白色圖標 */}
-          <svg
-            width="48"
-            height="48"
-            viewBox="0 0 24 24"
-            fill="white"
-          >
-            <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z" />
-          </svg>
-          {/* 文字 */}
-          <span className="text-4xl font-bold text-white tracking-wide ml-2">
-            {t('menu.enterDestination', locale)}
-          </span>
-        </div>
+        取消
       </button>
     </div>
   );
