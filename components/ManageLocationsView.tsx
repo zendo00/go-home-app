@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Locale, t } from '@/locales';
 import { IconArrowUp, IconArrowDown, IconEdit, IconDelete, IconPin, IconPlus } from './ui/Icons';
 import AddLocationModal from './AddLocationModal';
+import DeleteConfirmModal from './DeleteConfirmModal';
 
 interface Location {
   id: string;
@@ -41,6 +42,8 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editLocationData, setEditLocationData] = useState<Location | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [locationToDelete, setLocationToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     loadLocations();
@@ -115,11 +118,22 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
   };
 
   const handleDelete = (id: string) => {
-    const confirmDelete = window.confirm('確定要刪除此地點嗎？');
-    if (!confirmDelete) return;
-    
-    const newLocations = locations.filter((loc) => loc.id !== id);
-    saveLocations(newLocations);
+    setLocationToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (locationToDelete) {
+      const newLocations = locations.filter((loc) => loc.id !== locationToDelete);
+      saveLocations(newLocations);
+    }
+    setIsDeleteModalOpen(false);
+    setLocationToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteModalOpen(false);
+    setLocationToDelete(null);
   };
 
   // Move up function - swap with previous element
@@ -276,6 +290,14 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
         editingId={editLocationData?.id || null}
         initialLabel={editLocationData?.label}
         initialAddress={editLocationData?.address}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={isDeleteModalOpen}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+        locationLabel={locationToDelete ? locations.find(loc => loc.id === locationToDelete)?.label : undefined}
       />
     </div>
   );
