@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Locale, t } from '@/locales';
 import { IconArrowUp, IconArrowDown, IconEdit, IconDelete, IconPin, IconPlus } from './ui/Icons';
+import AddLocationModal from './AddLocationModal';
 
 interface Location {
   id: string;
@@ -33,20 +34,11 @@ const getAccentColor = (index: number): string => {
   return ACCENT_COLORS[index % ACCENT_COLORS.length];
 };
 
-// Deterministic hash function to generate color index from location ID
-const hashToColorIndex = (id: string): number => {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    const char = id.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32-bit integer
-  }
-  return Math.abs(hash) % ACCENT_COLORS.length;
-};
+
 
 export default function ManageLocationsView({ locale, onBack }: ManageLocationsViewProps) {
   const [locations, setLocations] = useState<Location[]>([]);
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   
   // Form state for add/edit
@@ -64,12 +56,12 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
       if (saved) {
         try {
           let parsed = JSON.parse(saved) as Location[];
-          // Backward compatibility: assign colorIndex to locations that don't have it
+          // Backward compatibility: assign RANDOM colorIndex to locations that don't have it
           const needsUpdate = parsed.some(loc => loc.colorIndex === undefined);
           if (needsUpdate) {
             parsed = parsed.map(loc => {
               if (loc.colorIndex === undefined) {
-                return { ...loc, colorIndex: hashToColorIndex(loc.id) };
+                return { ...loc, colorIndex: Math.floor(Math.random() * ACCENT_COLORS.length) };
               }
               return loc;
             });
@@ -97,29 +89,17 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   };
 
-  const handleAddSubmit = () => {
-    const trimmedLabel = formLabel.trim();
-    const trimmedAddress = formAddress.trim();
-    
-    if (!trimmedLabel || !trimmedAddress) {
-      setFormError('請填寫所有欄位');
-      return;
-    }
-    
+  const handleAddSubmit = (label: string, address: string) => {
     const newLocation: Location = {
       id: generateId(),
-      label: trimmedLabel,
-      address: trimmedAddress,
+      label: label,
+      address: address,
       colorIndex: Math.floor(Math.random() * ACCENT_COLORS.length),
     };
     const newLocations = [newLocation, ...locations];
     saveLocations(newLocations);
     
-    // Reset form
-    setFormLabel('');
-    setFormAddress('');
-    setFormError(null);
-    setShowAddForm(false);
+    setIsAddModalOpen(false);
   };
 
   const handleEditSubmit = () => {
@@ -175,18 +155,11 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
   };
 
   const startAdd = () => {
-    setFormLabel('');
-    setFormAddress('');
-    setFormError(null);
-    setEditingId(null);
-    setShowAddForm(true);
+    setIsAddModalOpen(true);
   };
 
-  const cancelAdd = () => {
-    setShowAddForm(false);
-    setFormLabel('');
-    setFormAddress('');
-    setFormError(null);
+  const handleCancel = () => {
+    setIsAddModalOpen(false);
   };
 
   const cancelEdit = () => {
@@ -215,53 +188,14 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
         <span className="text-xl font-bold">{t('common.back', locale)}</span>
       </button>
 
-      {/* Add Form (Fixed at top, not in scroll area) */}
-      {showAddForm && (
-        <div className="bg-white rounded-2xl shadow-sm p-5 border border-gray-200 sticky top-0 z-10">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">新增地點</h3>
-          
-          <div className="mb-4">
-            <label className="block text-base font-bold text-gray-900 mb-2">地點名稱</label>
-            <input
-              type="text"
-              value={formLabel}
-              onChange={(e) => setFormLabel(e.target.value)}
-              placeholder="例如：家、辦公室"
-              className="w-full p-4 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-base text-gray-900"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-base font-bold text-gray-900 mb-2">地址</label>
-            <textarea
-              value={formAddress}
-              onChange={(e) => setFormAddress(e.target.value)}
-              placeholder="輸入完整地址"
-              className="w-full p-4 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-base text-gray-900 resize-none"
-              rows={3}
-            />
-          </div>
-
-          {formError && (
-            <p className="text-red-600 text-sm mb-3">{formError}</p>
-          )}
-
-          <div className="flex gap-3">
-            <button
-              onClick={handleAddSubmit}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold py-4 transition-all duration-200 active:scale-95"
-            >
-              保存
-            </button>
-            <button
-              onClick={cancelAdd}
-              className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-xl font-bold py-4 transition-all duration-200 active:scale-95"
-            >
-              取消
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Add New Button */}
+      <button
+        onClick={startAdd}
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-sm font-bold py-4 px-6 transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
+      >
+        <IconPlus className="w-6 h-6" />
+        新增地點
+      </button>
 
       {/* Edit Form (Fixed at top, not in scroll area) */}
       {editingId !== null && (
@@ -309,20 +243,9 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
         </div>
       )}
 
-      {/* Add New Button (only when not showing form) */}
-      {!showAddForm && editingId === null && (
-        <button
-          onClick={startAdd}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-sm font-bold py-4 px-6 transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
-        >
-          <IconPlus className="w-6 h-6" />
-          新增地點
-        </button>
-      )}
-
       {/* Scrollable Cards Container */}
       <div className="max-h-[60vh] overflow-y-auto space-y-3">
-        {locations.length === 0 && !showAddForm && editingId === null ? (
+        {locations.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-gray-900">
             <IconPin className="w-16 h-16 text-gray-400 mb-4 opacity-50" />
             <p className="text-lg">暫無保存的地點</p>
@@ -330,7 +253,7 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
           </div>
         ) : (
           locations.map((location, index) => {
-            const colorIndex = location.colorIndex ?? hashToColorIndex(location.id);
+            const colorIndex = location.colorIndex!;
             const accentColor = getAccentColor(colorIndex);
             return (
               <div
@@ -400,6 +323,12 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
           })
         )}
       </div>
+      {/* Add Location Modal */}
+      <AddLocationModal
+        isOpen={isAddModalOpen}
+        onClose={handleCancel}
+        onSave={handleAddSubmit}
+      />
     </div>
   );
 }
