@@ -336,17 +336,19 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
                       </button>
                     </div>
 
-                    {/* Icon immediately before name */}
-                    <IconPin className="w-6 h-6 text-gray-400 mr-3 flex-shrink-0" />
-
                     {/* Name + Address */}
                     <div className="min-w-0 flex-1">
-                      <h4 className="text-lg font-bold text-gray-900 truncate">
+                      {/* Name: Own Line */}
+                      <h4 className="text-lg font-bold text-gray-900 mb-1">
                         {location.label}
                       </h4>
-                      <p className="text-sm text-gray-500 truncate">
-                        {location.address}
-                      </p>
+                      {/* Address Line: Icon + Text */}
+                      <div className="flex items-center">
+                        <IconPin className="w-4 h-4 text-gray-400 mr-2 flex-shrink-0" />
+                        <p className="text-sm text-gray-500 truncate">
+                          {location.address}
+                        </p>
+                      </div>
                     </div>
                   </div>
 

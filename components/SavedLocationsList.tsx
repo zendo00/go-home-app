@@ -83,20 +83,22 @@ export default function SavedLocationsList({ locale, onLocationSelect, onBack }:
           className="w-full text-left bg-blue-50 hover:bg-blue-100 active:bg-blue-200 border border-blue-200 rounded-lg p-5 transition-all duration-200 group"
           style={{ minHeight: '60px' }}
         >
-          <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 mt-1">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-600">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-                <circle cx="12" cy="10" r="3" />
-              </svg>
-            </div>
+          <div className="flex items-start gap-3">
             <div className="flex-1 min-w-0">
+              {/* Name: Own Line */}
               <h3 className="text-lg font-semibold text-gray-900 mb-1">
                 {location.label}
               </h3>
-              <p className="text-base text-gray-700 line-clamp-2">
-                {location.address}
-              </p>
+              {/* Address Line: Icon + Text */}
+              <div className="flex items-center">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-400 flex-shrink-0 mr-2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <p className="text-sm text-gray-500 line-clamp-2">
+                  {location.address}
+                </p>
+              </div>
             </div>
             <div className="flex-shrink-0 self-center">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-blue-600 group-hover:translate-x-1 transition-transform">
