@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Locale, t } from '@/locales';
+import { IconArrowUp, IconArrowDown, IconEdit, IconDelete, IconPin, IconPlus } from './ui/Icons';
 
 interface Location {
   id: string;
@@ -14,12 +15,21 @@ interface ManageLocationsViewProps {
   onBack: () => void;
 }
 
-// Pastel color palette for cards
-const CARD_COLORS = ['#E3F2FD', '#F1F8E9', '#FFF3E0', '#F3E5F5', '#FFEBEE', '#E0F7FA', '#F1F8E9', '#FFF8E1'];
+// Accent color palette for left bars (Tailwind classes)
+const ACCENT_COLORS = [
+  'bg-blue-500',
+  'bg-green-500',
+  'bg-orange-500',
+  'bg-purple-500',
+  'bg-red-500',
+  'bg-cyan-500',
+  'bg-emerald-500',
+  'bg-amber-500',
+];
 
-// Helper function to get card color based on index
-const getCardColor = (index: number): string => {
-  return CARD_COLORS[index % CARD_COLORS.length];
+// Helper function to get accent color class based on index
+const getAccentColor = (index: number): string => {
+  return ACCENT_COLORS[index % ACCENT_COLORS.length];
 };
 
 export default function ManageLocationsView({ locale, onBack }: ManageLocationsViewProps) {
@@ -183,7 +193,7 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
 
       {/* Add Form (Fixed at top, not in scroll area) */}
       {showAddForm && (
-        <div className="bg-white rounded-2xl shadow-md p-5 border border-gray-200 sticky top-0 z-10">
+        <div className="bg-white rounded-2xl shadow-sm p-5 border border-gray-200 sticky top-0 z-10">
           <h3 className="text-xl font-bold text-gray-900 mb-4">新增地點</h3>
           
           <div className="mb-4">
@@ -231,7 +241,7 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
 
       {/* Edit Form (Fixed at top, not in scroll area) */}
       {editingId !== null && (
-        <div className="bg-white rounded-2xl shadow-md p-5 border border-gray-200 sticky top-0 z-10">
+        <div className="bg-white rounded-2xl shadow-sm p-5 border border-gray-200 sticky top-0 z-10">
           <h3 className="text-xl font-bold text-gray-900 mb-4">編輯地點</h3>
           
           <div className="mb-4">
@@ -279,11 +289,9 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
       {!showAddForm && editingId === null && (
         <button
           onClick={startAdd}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-md font-bold py-4 px-6 transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-sm font-bold py-4 px-6 transition-all duration-200 active:scale-95 flex items-center justify-center gap-2"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-            <path d="M12 5v14M5 12h14" />
-          </svg>
+          <IconPlus className="w-6 h-6" />
           新增地點
         </button>
       )}
@@ -292,41 +300,45 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
       <div className="max-h-[60vh] overflow-y-auto space-y-3">
         {locations.length === 0 && !showAddForm && editingId === null ? (
           <div className="flex flex-col items-center justify-center py-12 text-gray-900">
-            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="gray" strokeWidth="1.5" className="mb-4 opacity-50">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
+            <IconPin className="w-16 h-16 text-gray-400 mb-4 opacity-50" />
             <p className="text-lg">暫無保存的地點</p>
-            <p className="text-sm mt-2 opacity-75">點擊上方按鈕新增地點</p>
+            <p className="text-sm mt-2 text-gray-500">點擊上方按鈕新增地點</p>
           </div>
         ) : (
           locations.map((location, index) => {
-            const cardColor = getCardColor(index);
+            const accentColor = getAccentColor(index);
             return (
               <div
                 key={location.id}
-                className="rounded-xl px-4 py-3 border border-gray-200"
-                style={{ backgroundColor: cardColor }}
+                className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 p-4">
+                  {/* Left Accent Bar */}
+                  <div className={`flex-shrink-0 w-1.5 ${accentColor}`} />
+
                   {/* Left Side: Up/Down Arrows */}
                   <div className="flex-shrink-0 flex flex-col gap-1">
                     <button
                       onClick={() => moveUp(index)}
                       disabled={index === 0}
-                      className="p-2 rounded-lg hover:bg-black/5 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                      className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                       aria-label="上移"
                     >
-                      <span className="text-xl">⬆️</span>
+                      <IconArrowUp className="w-5 h-5 text-gray-600" />
                     </button>
                     <button
                       onClick={() => moveDown(index)}
                       disabled={index === locations.length - 1}
-                      className="p-2 rounded-lg hover:bg-black/5 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                      className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                       aria-label="下移"
                     >
-                      <span className="text-xl">⬇️</span>
+                      <IconArrowDown className="w-5 h-5 text-gray-600" />
                     </button>
+                  </div>
+
+                  {/* Icon */}
+                  <div className="flex-shrink-0">
+                    <IconPin className="w-6 h-6 text-gray-400" />
                   </div>
 
                   {/* Center: Name + Address */}
@@ -334,26 +346,26 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
                     <h4 className="text-lg font-bold text-gray-900 mb-1">
                       {location.label}
                     </h4>
-                    <p className="text-base text-gray-700 line-clamp-2">
+                    <p className="text-sm text-gray-500 line-clamp-2">
                       {location.address}
                     </p>
                   </div>
 
                   {/* Right Side: Edit/Delete Buttons */}
-                  <div className="flex-shrink-0 flex gap-2">
+                  <div className="flex-shrink-0 flex gap-1">
                     <button
                       onClick={() => startEdit(location)}
-                      className="p-2 rounded-lg hover:bg-black/5 transition-colors"
+                      className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
                       aria-label="編輯"
                     >
-                      <span className="text-xl">✏️</span>
+                      <IconEdit className="w-5 h-5 text-gray-600" />
                     </button>
                     <button
                       onClick={() => handleDelete(location.id)}
-                      className="p-2 rounded-lg hover:bg-black/5 transition-colors"
+                      className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
                       aria-label="刪除"
                     >
-                      <span className="text-xl">🗑️</span>
+                      <IconDelete className="w-5 h-5 text-gray-600" />
                     </button>
                   </div>
                 </div>

@@ -19,8 +19,6 @@ export default function ManageLocations({ locale, onBack }: ManageLocationsProps
   const [locations, setLocations] = useState<Location[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showConfirmDelete, setShowConfirmDelete] = useState<string | null>(null);
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const dragItemRef = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
     loadLocations();
@@ -78,43 +76,7 @@ export default function ManageLocations({ locale, onBack }: ManageLocationsProps
     setShowConfirmDelete(null);
   };
 
-  // 拖拽處理
-  const handleDragStart = (e: React.DragEvent, index: number) => {
-    setDraggedIndex(index);
-    e.dataTransfer.effectAllowed = 'move';
-    // 設置透明的拖拽圖像
-    const rect = dragItemRef.current[index]?.getBoundingClientRect();
-    if (rect) {
-      const spacer = document.createElement('div');
-      spacer.style.width = `${rect.width}px`;
-      spacer.style.height = `${rect.height}px`;
-      spacer.style.position = 'absolute';
-      spacer.style.visibility = 'hidden';
-      document.body.appendChild(spacer);
-      e.dataTransfer.setDragImage(spacer, 0, 0);
-      setTimeout(() => document.body.removeChild(spacer), 0);
-    }
-  };
 
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-  };
-
-  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
-    e.preventDefault();
-    if (draggedIndex === null || draggedIndex === dropIndex) return;
-
-    const newLocations = [...locations];
-    const [draggedItem] = newLocations.splice(draggedIndex, 1);
-    newLocations.splice(dropIndex, 0, draggedItem);
-    saveLocations(newLocations);
-    setDraggedIndex(null);
-  };
-
-  const handleDragEnd = () => {
-    setDraggedIndex(null);
-  };
 
   const handleEditClick = (location: Location) => {
     setEditingId(location.id);
@@ -125,9 +87,23 @@ export default function ManageLocations({ locale, onBack }: ManageLocationsProps
   };
 
   const handleBack = () => {
-    setEditingId(null); // 重置編輯狀態
-    loadLocations(); // 重置列表
+    setEditingId(null);
+    loadLocations();
     onBack();
+  };
+
+  const moveUp = (index: number) => {
+    if (index === 0) return;
+    const newLocations = [...locations];
+    [newLocations[index - 1], newLocations[index]] = [newLocations[index], newLocations[index - 1]];
+    saveLocations(newLocations);
+  };
+
+  const moveDown = (index: number) => {
+    if (index === locations.length - 1) return;
+    const newLocations = [...locations];
+    [newLocations[index], newLocations[index + 1]] = [newLocations[index + 1], newLocations[index]];
+    saveLocations(newLocations);
   };
 
   if (locations.length === 0 && editingId === null) {
@@ -193,19 +169,7 @@ export default function ManageLocations({ locale, onBack }: ManageLocationsProps
         {locations.map((location, index) => (
           <div
             key={location.id}
-            ref={(el) => {
-              dragItemRef.current[index] = el!;
-            }}
-            draggable={editingId === null}
-            onDragStart={(e) => handleDragStart(e, index)}
-            onDragOver={(e) => handleDragOver(e, index)}
-            onDrop={(e) => handleDrop(e, index)}
-            onDragEnd={handleDragEnd}
-            className={`bg-gray-50 border rounded-lg p-4 transition-all duration-200 ${
-              draggedIndex === index
-                ? 'opacity-50 border-dashed border-blue-400'
-                : 'border-gray-300 hover:border-gray-400'
-            }`}
+            className="bg-gray-50 border border-gray-300 hover:border-gray-400 rounded-lg p-4 transition-all duration-200"
             style={{ minHeight: '80px' }}
           >
             {/* 確認刪除狀態 */}
@@ -234,22 +198,34 @@ export default function ManageLocations({ locale, onBack }: ManageLocationsProps
                 </div>
               </div>
             ) : (
-              <div className="flex items-start gap-3">
-                {/* 拖拽手柄 */}
+              <div className="flex items-center gap-3">
+                {/* Up/Down Arrows (left side) */}
                 {editingId === null && (
-                  <div className="flex-shrink-0 mt-2 cursor-grab active:cursor-grabbing text-gray-400">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                      <circle cx="8" cy="6" r="2" />
-                      <circle cx="16" cy="6" r="2" />
-                      <circle cx="8" cy="12" r="2" />
-                      <circle cx="16" cy="12" r="2" />
-                      <circle cx="8" cy="18" r="2" />
-                      <circle cx="16" cy="18" r="2" />
-                    </svg>
+                  <div className="flex-shrink-0 flex flex-col gap-1">
+                    <button
+                      onClick={() => moveUp(index)}
+                      disabled={index === 0}
+                      className="p-2 rounded-lg hover:bg-gray-200 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                      aria-label="上移"
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-700">
+                        <path d="M18 15l-6-6-6 6" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => moveDown(index)}
+                      disabled={index === locations.length - 1}
+                      className="p-2 rounded-lg hover:bg-gray-200 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                      aria-label="下移"
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-700">
+                        <path d="M6 9l6 6 6-6" />
+                      </svg>
+                    </button>
                   </div>
                 )}
 
-                {/* 內容 */}
+                {/* Content */}
                 <div className="flex-1 min-w-0">
                   <h4 className="text-base font-semibold text-gray-900 mb-1">
                     {location.label}
@@ -259,7 +235,7 @@ export default function ManageLocations({ locale, onBack }: ManageLocationsProps
                   </p>
                 </div>
 
-                {/* 操作按鈕 */}
+                {/* Edit/Delete Buttons (right side) */}
                 {editingId === null && (
                   <div className="flex-shrink-0 flex gap-2">
                     <button
@@ -291,12 +267,7 @@ export default function ManageLocations({ locale, onBack }: ManageLocationsProps
         ))}
       </div>
 
-      {/* 拖拽提示 */}
-      {editingId === null && locations.length > 1 && (
-        <p className="text-sm text-gray-500 text-center mt-4">
-          {t('menu.dragToReorder', locale)}
-        </p>
-      )}
+
     </div>
   );
 }

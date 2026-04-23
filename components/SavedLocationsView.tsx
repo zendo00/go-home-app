@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Locale, t } from '@/locales';
+import { IconPin } from './ui/Icons';
 
 interface Location {
   id: string;
@@ -16,12 +17,21 @@ interface SavedLocationsViewProps {
   onManage: () => void;
 }
 
-// Pastel color palette for cards (same as ManageLocationsView)
-const CARD_COLORS = ['#E3F2FD', '#F1F8E9', '#FFF3E0', '#F3E5F5', '#FFEBEE', '#E0F7FA', '#F1F8E9', '#FFF8E1'];
+// Accent color palette for left bars (Tailwind classes - same as ManageLocationsView)
+const ACCENT_COLORS = [
+  'bg-blue-500',
+  'bg-green-500',
+  'bg-orange-500',
+  'bg-purple-500',
+  'bg-red-500',
+  'bg-cyan-500',
+  'bg-emerald-500',
+  'bg-amber-500',
+];
 
-// Helper function to get card color based on index
-const getCardColor = (index: number): string => {
-  return CARD_COLORS[index % CARD_COLORS.length];
+// Helper function to get accent color class based on index
+const getAccentColor = (index: number): string => {
+  return ACCENT_COLORS[index % ACCENT_COLORS.length];
 };
 
 export default function SavedLocationsView({ locale, onLocationSelect, onBack, onManage }: SavedLocationsViewProps) {
@@ -57,12 +67,9 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
   if (locations.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-gray-900">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="gray" strokeWidth="1.5" className="mb-4 opacity-50">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-          <circle cx="12" cy="10" r="3" />
-        </svg>
+        <IconPin className="w-16 h-16 text-gray-400 mb-4 opacity-50" />
         <p className="text-lg mb-2">{t('menu.noSavedLocations', locale)}</p>
-        <p className="text-sm text-gray-600 mb-6">{t('menu.goManageToAdd', locale)}</p>
+        <p className="text-sm text-gray-500 mb-6">{t('menu.goManageToAdd', locale)}</p>
         <button
           onClick={onManage}
           className="px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-xl text-white font-bold text-xl transition-all duration-200 active:scale-95 shadow-lg"
@@ -95,30 +102,31 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
       {/* Scrollable Locations List */}
       <div className="max-h-[60vh] overflow-y-auto space-y-3">
         {locations.map((location, index) => {
-          const cardColor = getCardColor(index);
+          const accentColor = getAccentColor(index);
           return (
             <button
               key={location.id}
               onClick={() => handleLocationClick(location)}
-              className="w-full text-left rounded-xl px-4 py-3 border border-gray-200 hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: cardColor }}
+              className="w-full text-left bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:opacity-90 transition-opacity"
             >
-              <div className="flex items-center gap-3">
-                {/* Left Side: Empty space to match ManageLocationsView layout */}
-                <div className="flex-shrink-0 w-10" />
+              <div className="flex items-center gap-3 p-4">
+                {/* Left Accent Bar */}
+                <div className={`flex-shrink-0 w-1.5 ${accentColor}`} />
+
+                {/* Icon */}
+                <div className="flex-shrink-0">
+                  <IconPin className="w-6 h-6 text-gray-400" />
+                </div>
 
                 {/* Center: Name + Address */}
                 <div className="flex-1 min-w-0">
                   <h4 className="text-lg font-bold text-gray-900 mb-1">
                     {location.label}
                   </h4>
-                  <p className="text-base text-gray-700 line-clamp-2">
+                  <p className="text-sm text-gray-500 line-clamp-2">
                     {location.address}
                   </p>
                 </div>
-
-                {/* Right Side: Empty space to match ManageLocationsView layout */}
-                <div className="flex-shrink-0 w-16" />
               </div>
             </button>
           );
