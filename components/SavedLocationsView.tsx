@@ -13,9 +13,7 @@ interface Location {
 
 interface SavedLocationsViewProps {
   locale: Locale;
-  onLocationSelect: (address: string) => void;
   onBack: () => void;
-  onManage: () => void;
 }
 
 // Accent color palette for top borders (Hex codes for inline styles)
@@ -35,18 +33,9 @@ const getAccentColor = (index: number): string => {
   return ACCENT_COLORS[index % ACCENT_COLORS.length];
 };
 
-// Deterministic hash function to generate color index from location ID
-const hashToColorIndex = (id: string): number => {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    const char = id.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash; // Convert to 32-bit integer
-  }
-  return Math.abs(hash) % ACCENT_COLORS.length;
-};
 
-export default function SavedLocationsView({ locale, onLocationSelect, onBack, onManage }: SavedLocationsViewProps) {
+
+export default function SavedLocationsView({ locale, onBack }: SavedLocationsViewProps) {
   const [locations, setLocations] = useState<Location[]>([]);
 
   useEffect(() => {
@@ -59,12 +48,12 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
       if (saved) {
         try {
           let parsed = JSON.parse(saved) as Location[];
-          // Backward compatibility: assign colorIndex to locations that don't have it
+          // Backward compatibility: assign RANDOM colorIndex to locations that don't have it
           const needsUpdate = parsed.some(loc => loc.colorIndex === undefined);
           if (needsUpdate) {
             parsed = parsed.map(loc => {
               if (loc.colorIndex === undefined) {
-                return { ...loc, colorIndex: hashToColorIndex(loc.id) };
+                return { ...loc, colorIndex: Math.floor(Math.random() * ACCENT_COLORS.length) };
               }
               return loc;
             });
@@ -92,13 +81,6 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
       <div className="flex flex-col items-center justify-center py-12 text-gray-900">
         <IconPin className="w-16 h-16 text-gray-400 mb-4 opacity-50" />
         <p className="text-lg mb-2">{t('menu.noSavedLocations', locale)}</p>
-        <p className="text-sm text-gray-500 mb-6">{t('menu.goManageToAdd', locale)}</p>
-        <button
-          onClick={onManage}
-          className="px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-xl text-white font-bold text-xl transition-all duration-200 active:scale-95 shadow-lg"
-        >
-          {t('menu.manageLocations', locale)}
-        </button>
         <button
           onClick={onBack}
           className="mt-4 px-8 py-4 bg-gray-200 hover:bg-gray-300 rounded-xl text-gray-900 font-bold text-xl transition-all duration-200 active:scale-95"
@@ -125,7 +107,7 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
       {/* Scrollable Locations List */}
       <div className="max-h-[60vh] overflow-y-auto space-y-3">
         {locations.map((location) => {
-          const colorIndex = location.colorIndex ?? hashToColorIndex(location.id);
+          const colorIndex = location.colorIndex!;
           const accentColor = getAccentColor(colorIndex);
           return (
             <button
@@ -152,13 +134,6 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
         })}
       </div>
 
-      {/* Manage Button */}
-      <button
-        onClick={onManage}
-        className="w-full mt-4 px-8 py-4 bg-green-600 hover:bg-green-700 rounded-xl text-white font-bold text-xl transition-all duration-200 active:scale-95 shadow-lg"
-      >
-        {t('menu.manageLocations', locale)}
-      </button>
     </div>
   );
 }
