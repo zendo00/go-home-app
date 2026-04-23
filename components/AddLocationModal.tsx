@@ -1,15 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { IconPlus } from './ui/Icons';
 
 interface AddLocationModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (label: string, address: string) => void;
+  editingId?: string | null;
+  initialLabel?: string;
+  initialAddress?: string;
 }
 
-export default function AddLocationModal({ isOpen, onClose, onSave }: AddLocationModalProps) {
+export default function AddLocationModal({ isOpen, onClose, onSave, editingId, initialLabel, initialAddress }: AddLocationModalProps) {
   const [label, setLabel] = useState('');
   const [address, setAddress] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +39,20 @@ export default function AddLocationModal({ isOpen, onClose, onSave }: AddLocatio
     onClose();
   };
 
+  // Update form when initial data changes while modal is open
+  useEffect(() => {
+    if (isOpen) {
+      if (editingId && initialLabel && initialAddress) {
+        setLabel(initialLabel);
+        setAddress(initialAddress);
+      } else {
+        setLabel('');
+        setAddress('');
+      }
+      setError(null);
+    }
+  }, [isOpen, editingId, initialLabel, initialAddress]);
+
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       handleCancel();
@@ -50,7 +67,7 @@ export default function AddLocationModal({ isOpen, onClose, onSave }: AddLocatio
       onClick={handleBackdropClick}
     >
       <div className="bg-white rounded-2xl shadow-2xl w-[90%] max-w-md p-6">
-        <h3 className="text-2xl font-bold text-gray-900 mb-4">新增地點</h3>
+        <h3 className="text-2xl font-bold text-gray-900 mb-4">{editingId ? '編輯地點' : '新增地點'}</h3>
 
         <div className="mb-4">
           <label className="block text-base font-bold text-gray-900 mb-2">地點名稱</label>
@@ -83,7 +100,7 @@ export default function AddLocationModal({ isOpen, onClose, onSave }: AddLocatio
             onClick={handleSubmit}
             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold py-4 transition-all duration-200 active:scale-95"
           >
-            保存
+            {editingId ? '保存變更' : '保存'}
           </button>
           <button
             onClick={handleCancel}

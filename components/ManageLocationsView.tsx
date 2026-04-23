@@ -39,12 +39,8 @@ const getAccentColor = (index: number): string => {
 export default function ManageLocationsView({ locale, onBack }: ManageLocationsViewProps) {
   const [locations, setLocations] = useState<Location[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  
-  // Form state for add/edit
-  const [formLabel, setFormLabel] = useState('');
-  const [formAddress, setFormAddress] = useState('');
-  const [formError, setFormError] = useState<string | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editLocationData, setEditLocationData] = useState<Location | null>(null);
 
   useEffect(() => {
     loadLocations();
@@ -102,32 +98,20 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
     setIsAddModalOpen(false);
   };
 
-  const handleEditSubmit = () => {
-    const trimmedLabel = formLabel.trim();
-    const trimmedAddress = formAddress.trim();
-    
-    if (!trimmedLabel || !trimmedAddress) {
-      setFormError('請填寫所有欄位');
-      return;
-    }
-    
-    if (editingId) {
+  const handleEditSubmit = (label: string, address: string) => {
+    if (editLocationData) {
       const newLocations = locations.map((loc) =>
-        loc.id === editingId ? { ...loc, label: trimmedLabel, address: trimmedAddress } : loc
+        loc.id === editLocationData.id ? { ...loc, label, address } : loc
       );
       saveLocations(newLocations);
-      setEditingId(null);
-      setFormLabel('');
-      setFormAddress('');
-      setFormError(null);
+      setIsEditModalOpen(false);
+      setEditLocationData(null);
     }
   };
   
   const startEdit = (location: Location) => {
-    setEditingId(location.id);
-    setFormLabel(location.label);
-    setFormAddress(location.address);
-    setFormError(null);
+    setEditLocationData(location);
+    setIsEditModalOpen(true);
   };
 
   const handleDelete = (id: string) => {
@@ -158,19 +142,19 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
     setIsAddModalOpen(true);
   };
 
-  const handleCancel = () => {
+  const handleAddCancel = () => {
     setIsAddModalOpen(false);
   };
 
-  const cancelEdit = () => {
-    setEditingId(null);
-    setFormLabel('');
-    setFormAddress('');
-    setFormError(null);
+  const handleEditCancel = () => {
+    setIsEditModalOpen(false);
+    setEditLocationData(null);
   };
 
   const handleBack = () => {
-    setEditingId(null);
+    setIsAddModalOpen(false);
+    setIsEditModalOpen(false);
+    setEditLocationData(null);
     loadLocations();
     onBack();
   };
@@ -196,52 +180,6 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
         <IconPlus className="w-6 h-6" />
         新增地點
       </button>
-
-      {/* Edit Form (Fixed at top, not in scroll area) */}
-      {editingId !== null && (
-        <div className="bg-white rounded-2xl shadow-sm p-5 border border-gray-200 sticky top-0 z-10">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">編輯地點</h3>
-          
-          <div className="mb-4">
-            <label className="block text-base font-bold text-gray-900 mb-2">地點名稱</label>
-            <input
-              type="text"
-              value={formLabel}
-              onChange={(e) => setFormLabel(e.target.value)}
-              className="w-full p-4 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-base text-gray-900"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-base font-bold text-gray-900 mb-2">地址</label>
-            <textarea
-              value={formAddress}
-              onChange={(e) => setFormAddress(e.target.value)}
-              className="w-full p-4 bg-gray-50 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-base text-gray-900 resize-none"
-              rows={3}
-            />
-          </div>
-
-          {formError && (
-            <p className="text-red-600 text-sm mb-3">{formError}</p>
-          )}
-
-          <div className="flex gap-3">
-            <button
-              onClick={handleEditSubmit}
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold py-4 transition-all duration-200 active:scale-95"
-            >
-              保存變更
-            </button>
-            <button
-              onClick={cancelEdit}
-              className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-xl font-bold py-4 transition-all duration-200 active:scale-95"
-            >
-              取消
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Scrollable Cards Container */}
       <div className="max-h-[60vh] overflow-y-auto space-y-3">
@@ -326,8 +264,18 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
       {/* Add Location Modal */}
       <AddLocationModal
         isOpen={isAddModalOpen}
-        onClose={handleCancel}
+        onClose={handleAddCancel}
         onSave={handleAddSubmit}
+      />
+
+      {/* Edit Location Modal */}
+      <AddLocationModal
+        isOpen={isEditModalOpen}
+        onClose={handleEditCancel}
+        onSave={handleEditSubmit}
+        editingId={editLocationData?.id || null}
+        initialLabel={editLocationData?.label}
+        initialAddress={editLocationData?.address}
       />
     </div>
   );
