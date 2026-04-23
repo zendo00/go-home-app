@@ -15,19 +15,19 @@ interface ManageLocationsViewProps {
   onBack: () => void;
 }
 
-// Accent color palette for left bars (Tailwind classes)
+// Accent color palette for left bars (Hex codes for inline styles)
 const ACCENT_COLORS = [
-  'bg-blue-500',
-  'bg-green-500',
-  'bg-orange-500',
-  'bg-purple-500',
-  'bg-red-500',
-  'bg-cyan-500',
-  'bg-emerald-500',
-  'bg-amber-500',
+  '#2563EB', // Blue
+  '#16A34A', // Green
+  '#EA580C', // Orange
+  '#7C3AED', // Purple
+  '#DC2626', // Red
+  '#0891B2', // Cyan
+  '#059669', // Emerald
+  '#D97706', // Amber
 ];
 
-// Helper function to get accent color class based on index
+// Helper function to get accent color hex code based on index
 const getAccentColor = (index: number): string => {
   return ACCENT_COLORS[index % ACCENT_COLORS.length];
 };
@@ -313,8 +313,8 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
                 className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
               >
                 <div className="flex items-center gap-3 p-4">
-                  {/* Left Accent Bar */}
-                  <div className={`flex-shrink-0 w-2 h-full ${accentColor} rounded-l-xl`} />
+                  {/* Left Accent Bar - Using inline style for guaranteed visibility */}
+                  <div style={{ width: '8px', backgroundColor: accentColor, height: '100%', borderRadius: '4px 0 0 4px' }} />
 
                   {/* Left Side: Up/Down Arrows */}
                   <div className="flex-shrink-0 flex flex-col gap-1">
