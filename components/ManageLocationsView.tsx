@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Locale, t } from '@/locales';
 
 interface Location {
@@ -14,13 +14,18 @@ interface ManageLocationsViewProps {
   onBack: () => void;
 }
 
+// Pastel color palette for cards
+const CARD_COLORS = ['#E3F2FD', '#F1F8E9', '#FFF3E0', '#F3E5F5', '#FFEBEE', '#E0F7FA', '#F1F8E9', '#FFF8E1'];
+
+// Helper function to get card color based on index
+const getCardColor = (index: number): string => {
+  return CARD_COLORS[index % CARD_COLORS.length];
+};
+
 export default function ManageLocationsView({ locale, onBack }: ManageLocationsViewProps) {
   const [locations, setLocations] = useState<Location[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [showMenuForId, setShowMenuForId] = useState<string | null>(null);
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const dragItemRef = useRef<HTMLDivElement[]>([]);
   
   // Form state for add/edit
   const [formLabel, setFormLabel] = useState('');
@@ -109,66 +114,30 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
     setFormLabel(location.label);
     setFormAddress(location.address);
     setFormError(null);
-    setShowMenuForId(null);
   };
 
   const handleDelete = (id: string) => {
+    const confirmDelete = window.confirm('確定要刪除此地點嗎？');
+    if (!confirmDelete) return;
+    
     const newLocations = locations.filter((loc) => loc.id !== id);
     saveLocations(newLocations);
-    setShowMenuForId(null);
   };
 
-  // Drag and drop handling
-  const handleDragStart = (e: React.DragEvent, index: number) => {
-    setDraggedIndex(index);
-    e.dataTransfer.effectAllowed = 'move';
-    const rect = dragItemRef.current[index]?.getBoundingClientRect();
-    if (rect) {
-      const spacer = document.createElement('div');
-      spacer.style.width = `${rect.width}px`;
-      spacer.style.height = `${rect.height}px`;
-      spacer.style.position = 'absolute';
-      spacer.style.visibility = 'hidden';
-      document.body.appendChild(spacer);
-      e.dataTransfer.setDragImage(spacer, 0, 0);
-      setTimeout(() => document.body.removeChild(spacer), 0);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-  };
-
-  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
-    e.preventDefault();
-    if (draggedIndex === null || draggedIndex === dropIndex) return;
-
-    const newLocations = [...locations];
-    const [draggedItem] = newLocations.splice(draggedIndex, 1);
-    newLocations.splice(dropIndex, 0, draggedItem);
-    saveLocations(newLocations);
-    setDraggedIndex(null);
-  };
-
-  const handleDragEnd = () => {
-    setDraggedIndex(null);
-  };
-
+  // Move up function - swap with previous element
   const moveUp = (index: number) => {
     if (index === 0) return;
     const newLocations = [...locations];
     [newLocations[index - 1], newLocations[index]] = [newLocations[index], newLocations[index - 1]];
     saveLocations(newLocations);
-    setShowMenuForId(null);
   };
 
+  // Move down function - swap with next element
   const moveDown = (index: number) => {
     if (index === locations.length - 1) return;
     const newLocations = [...locations];
     [newLocations[index], newLocations[index + 1]] = [newLocations[index + 1], newLocations[index]];
     saveLocations(newLocations);
-    setShowMenuForId(null);
   };
 
   const startAdd = () => {
@@ -191,7 +160,6 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
     setFormLabel('');
     setFormAddress('');
     setFormError(null);
-    setShowMenuForId(null);
   };
 
   const handleBack = () => {
@@ -213,9 +181,9 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
         <span className="text-xl font-bold">{t('common.back', locale)}</span>
       </button>
 
-      {/* Add Form (Expandable) */}
+      {/* Add Form (Fixed at top, not in scroll area) */}
       {showAddForm && (
-        <div className="bg-white rounded-2xl shadow-md p-5 border border-gray-200">
+        <div className="bg-white rounded-2xl shadow-md p-5 border border-gray-200 sticky top-0 z-10">
           <h3 className="text-xl font-bold text-gray-900 mb-4">新增地點</h3>
           
           <div className="mb-4">
@@ -261,9 +229,9 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
         </div>
       )}
 
-      {/* Edit Form (Expandable) */}
+      {/* Edit Form (Fixed at top, not in scroll area) */}
       {editingId !== null && (
-        <div className="bg-white rounded-2xl shadow-md p-5 border border-gray-200">
+        <div className="bg-white rounded-2xl shadow-md p-5 border border-gray-200 sticky top-0 z-10">
           <h3 className="text-xl font-bold text-gray-900 mb-4">編輯地點</h3>
           
           <div className="mb-4">
@@ -320,8 +288,8 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
         </button>
       )}
 
-      {/* Stacked Cards List */}
-      <div className="space-y-3">
+      {/* Scrollable Cards Container */}
+      <div className="max-h-[60vh] overflow-y-auto space-y-3">
         {locations.length === 0 && !showAddForm && editingId === null ? (
           <div className="flex flex-col items-center justify-center py-12 text-gray-900">
             <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="gray" strokeWidth="1.5" className="mb-4 opacity-50">
@@ -332,125 +300,68 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
             <p className="text-sm mt-2 opacity-75">點擊上方按鈕新增地點</p>
           </div>
         ) : (
-          locations.map((location, index) => (
-          <div
-            key={location.id}
-            ref={(el) => {
-              dragItemRef.current[index] = el!;
-            }}
-            draggable={editingId === null && showMenuForId === null}
-            onDragStart={(e) => handleDragStart(e, index)}
-            onDragOver={(e) => handleDragOver(e, index)}
-            onDrop={(e) => handleDrop(e, index)}
-            onDragEnd={handleDragEnd}
-            className={`bg-white rounded-2xl shadow-md p-5 border border-gray-100 transition-all duration-200 ${
-              draggedIndex === index
-                ? 'opacity-50 border-dashed border-blue-400 shadow-lg'
-                : 'hover:shadow-lg hover:border-gray-200'
-            }`}
-          >
-            {/* Card Content */}
-            <div className="flex items-start gap-4">
-              {/* Drag Handle (only when not editing/menu open) */}
-              {editingId === null && showMenuForId === null && (
-                <div className="flex-shrink-0 mt-1 cursor-grab active:cursor-grabbing text-gray-300 hover:text-gray-400">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <circle cx="8" cy="6" r="2" />
-                    <circle cx="16" cy="6" r="2" />
-                    <circle cx="8" cy="12" r="2" />
-                    <circle cx="16" cy="12" r="2" />
-                    <circle cx="8" cy="18" r="2" />
-                    <circle cx="16" cy="18" r="2" />
-                  </svg>
-                </div>
-              )}
+          locations.map((location, index) => {
+            const cardColor = getCardColor(index);
+            return (
+              <div
+                key={location.id}
+                className="rounded-xl px-4 py-3 border border-gray-200"
+                style={{ backgroundColor: cardColor }}
+              >
+                <div className="flex items-center gap-3">
+                  {/* Left Side: Up/Down Arrows */}
+                  <div className="flex-shrink-0 flex flex-col gap-1">
+                    <button
+                      onClick={() => moveUp(index)}
+                      disabled={index === 0}
+                      className="p-2 rounded-lg hover:bg-black/5 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                      aria-label="上移"
+                    >
+                      <span className="text-xl">⬆️</span>
+                    </button>
+                    <button
+                      onClick={() => moveDown(index)}
+                      disabled={index === locations.length - 1}
+                      className="p-2 rounded-lg hover:bg-black/5 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                      aria-label="下移"
+                    >
+                      <span className="text-xl">⬇️</span>
+                    </button>
+                  </div>
 
-              {/* Location Info */}
-              <div className="flex-1 min-w-0">
-                <h4 className="text-xl font-bold text-gray-900 mb-2">
-                  {location.label}
-                </h4>
-                <p className="text-base text-gray-600 line-clamp-2">
-                  {location.address}
-                </p>
-              </div>
+                  {/* Center: Name + Address */}
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-lg font-bold text-gray-900 mb-1">
+                      {location.label}
+                    </h4>
+                    <p className="text-base text-gray-700 line-clamp-2">
+                      {location.address}
+                    </p>
+                  </div>
 
-              {/* Manage Button (only when not editing) */}
-              {editingId === null && (
-                <div className="flex-shrink-0">
-                  <button
-                    onClick={() => setShowMenuForId(showMenuForId === location.id ? null : location.id)}
-                    className={`px-5 py-3 rounded-xl font-bold transition-all duration-200 ${
-                      showMenuForId === location.id
-                        ? 'bg-gray-700 text-white'
-                        : 'bg-blue-600 hover:bg-blue-700 text-white'
-                    }`}
-                  >
-                    管理
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Manage Menu (expanded options) */}
-            {showMenuForId === location.id && (
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => startEdit(location)}
-                    className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-xl font-bold transition-colors"
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                      <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-                    </svg>
-                    編輯
-                  </button>
-                  
-                  <button
-                    onClick={() => handleDelete(location.id)}
-                    className="flex items-center justify-center gap-2 px-4 py-3 bg-red-50 hover:bg-red-100 text-red-700 rounded-xl font-bold transition-colors"
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-                    </svg>
-                    刪除
-                  </button>
-                  
-                  <button
-                    onClick={() => moveUp(index)}
-                    disabled={index === 0}
-                    className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 hover:bg-gray-100 disabled:bg-gray-100 disabled:text-gray-400 text-gray-700 rounded-xl font-bold transition-colors"
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M18 15l-6-6-6 6" />
-                    </svg>
-                    上移
-                  </button>
-                  
-                  <button
-                    onClick={() => moveDown(index)}
-                    disabled={index === locations.length - 1}
-                    className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 hover:bg-gray-100 disabled:bg-gray-100 disabled:text-gray-400 text-gray-700 rounded-xl font-bold transition-colors"
-                  >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M6 9l6 6 6-6" />
-                    </svg>
-                    下移
-                  </button>
+                  {/* Right Side: Edit/Delete Buttons */}
+                  <div className="flex-shrink-0 flex gap-2">
+                    <button
+                      onClick={() => startEdit(location)}
+                      className="p-2 rounded-lg hover:bg-black/5 transition-colors"
+                      aria-label="編輯"
+                    >
+                      <span className="text-xl">✏️</span>
+                    </button>
+                    <button
+                      onClick={() => handleDelete(location.id)}
+                      className="p-2 rounded-lg hover:bg-black/5 transition-colors"
+                      aria-label="刪除"
+                    >
+                      <span className="text-xl">🗑️</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            )}
-          </div>
-        )))}
+            );
+          })
+        )}
       </div>
-
-      {/* Drag Hint */}
-      {editingId === null && showMenuForId === null && locations.length > 1 && (
-        <p className="text-sm text-gray-500 text-center mt-4">
-          拖曳卡片以重新排序
-        </p>
-      )}
     </div>
   );
 }

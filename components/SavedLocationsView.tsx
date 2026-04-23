@@ -16,6 +16,14 @@ interface SavedLocationsViewProps {
   onManage: () => void;
 }
 
+// Pastel color palette for cards (same as ManageLocationsView)
+const CARD_COLORS = ['#E3F2FD', '#F1F8E9', '#FFF3E0', '#F3E5F5', '#FFEBEE', '#E0F7FA', '#F1F8E9', '#FFF8E1'];
+
+// Helper function to get card color based on index
+const getCardColor = (index: number): string => {
+  return CARD_COLORS[index % CARD_COLORS.length];
+};
+
 export default function SavedLocationsView({ locale, onLocationSelect, onBack, onManage }: SavedLocationsViewProps) {
   const [locations, setLocations] = useState<Location[]>([]);
 
@@ -41,7 +49,9 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
   };
 
   const handleLocationClick = (location: Location) => {
-    onLocationSelect(location.address);
+    // Navigate to Google Maps in driving mode
+    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(location.address)}`;
+    window.open(googleMapsUrl, '_blank');
   };
 
   if (locations.length === 0) {
@@ -82,37 +92,37 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
         <span className="text-xl font-bold">{t('common.back', locale)}</span>
       </button>
 
-      {/* Locations List */}
-      <div className="space-y-3">
-        {locations.map((location) => (
-          <button
-            key={location.id}
-            onClick={() => handleLocationClick(location)}
-            className="w-full text-left bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl p-5 transition-all duration-200 group shadow-lg"
-          >
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 mt-1">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
+      {/* Scrollable Locations List */}
+      <div className="max-h-[60vh] overflow-y-auto space-y-3">
+        {locations.map((location, index) => {
+          const cardColor = getCardColor(index);
+          return (
+            <button
+              key={location.id}
+              onClick={() => handleLocationClick(location)}
+              className="w-full text-left rounded-xl px-4 py-3 border border-gray-200 hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: cardColor }}
+            >
+              <div className="flex items-center gap-3">
+                {/* Left Side: Empty space to match ManageLocationsView layout */}
+                <div className="flex-shrink-0 w-10" />
+
+                {/* Center: Name + Address */}
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-lg font-bold text-gray-900 mb-1">
+                    {location.label}
+                  </h4>
+                  <p className="text-base text-gray-700 line-clamp-2">
+                    {location.address}
+                  </p>
+                </div>
+
+                {/* Right Side: Empty space to match ManageLocationsView layout */}
+                <div className="flex-shrink-0 w-16" />
               </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-xl font-bold text-white mb-1">
-                  {location.label}
-                </h3>
-                <p className="text-base text-white/90 line-clamp-2">
-                  {location.address}
-                </p>
-              </div>
-              <div className="flex-shrink-0 self-center">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" className="group-hover:translate-x-1 transition-transform">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </div>
-            </div>
-          </button>
-        ))}
+            </button>
+          );
+        })}
       </div>
 
       {/* Manage Button */}
