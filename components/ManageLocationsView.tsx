@@ -298,6 +298,29 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
 
       {/* Scrollable Cards Container */}
       <div className="max-h-[60vh] overflow-y-auto space-y-3">
+        {/* 🔴 MINIMAL TEST CARD - DIAGNOSTIC ONLY */}
+        <div className="flex items-stretch border-2 border-red-500 mb-4 bg-white p-2">
+          {/* Colored Bar - Hardcoded with inline styles AND text */}
+          <div
+            style={{
+              width: '20px', // Make it wider for testing
+              backgroundColor: '#FF0000', // Bright red
+              height: '100%',
+              display: 'block',
+              flexShrink: 0,
+              border: '2px solid blue', // Blue border to confirm element exists
+            }}
+          >
+            <span style={{ color: 'white', fontSize: '10px', writingMode: 'vertical-rl' }}>TEST</span>
+          </div>
+          {/* Simple Content */}
+          <div className="flex-1">
+            <p className="text-black font-bold">TEST CARD - IF YOU SEE THIS, STRUCTURE IS OK</p>
+            <p className="text-gray-500">Test Address</p>
+          </div>
+        </div>
+        {/* END TEST CARD */}
+
         {locations.length === 0 && !showAddForm && editingId === null ? (
           <div className="flex flex-col items-center justify-center py-12 text-gray-900">
             <IconPin className="w-16 h-16 text-gray-400 mb-4 opacity-50" />
@@ -310,12 +333,21 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
             return (
               <div
                 key={location.id}
-                className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+                className="flex items-stretch mb-3 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
               >
-                <div className="flex items-center gap-3 p-4">
-                  {/* Left Accent Bar - Using inline style for guaranteed visibility */}
-                  <div style={{ width: '8px', backgroundColor: accentColor, height: '100%', borderRadius: '4px 0 0 4px' }} />
+                {/* Left Accent Bar - First Child */}
+                <div
+                  style={{
+                    width: '8px',
+                    backgroundColor: accentColor,
+                    height: '100%',
+                    flexShrink: 0,
+                    border: '2px solid red', // DEBUG: Remove after verification
+                  }}
+                />
 
+                {/* Content Wrapper */}
+                <div className="flex-1 p-4 flex items-center justify-between">
                   {/* Left Side: Up/Down Arrows */}
                   <div className="flex-shrink-0 flex flex-col gap-1">
                     <button

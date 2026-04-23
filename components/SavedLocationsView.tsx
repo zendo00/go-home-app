@@ -101,18 +101,49 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
 
       {/* Scrollable Locations List */}
       <div className="max-h-[60vh] overflow-y-auto space-y-3">
+        {/* 🔴 MINIMAL TEST CARD - DIAGNOSTIC ONLY */}
+        <div className="flex items-stretch border-2 border-red-500 mb-4 bg-white p-2">
+          {/* Colored Bar - Hardcoded with inline styles AND text */}
+          <div
+            style={{
+              width: '20px', // Make it wider for testing
+              backgroundColor: '#FF0000', // Bright red
+              height: '100%',
+              display: 'block',
+              flexShrink: 0,
+              border: '2px solid blue', // Blue border to confirm element exists
+            }}
+          >
+            <span style={{ color: 'white', fontSize: '10px', writingMode: 'vertical-rl' }}>TEST</span>
+          </div>
+          {/* Simple Content */}
+          <div className="flex-1">
+            <p className="text-black font-bold">TEST CARD - IF YOU SEE THIS, STRUCTURE IS OK</p>
+            <p className="text-gray-500">Test Address</p>
+          </div>
+        </div>
+        {/* END TEST CARD */}
+
         {locations.map((location, index) => {
           const accentColor = getAccentColor(index);
           return (
             <button
               key={location.id}
               onClick={() => handleLocationClick(location)}
-              className="w-full text-left bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:opacity-90 transition-opacity"
+              className="w-full text-left flex items-stretch mb-3 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden hover:opacity-90 transition-opacity"
             >
-              <div className="flex items-center gap-3 p-4">
-                {/* Left Accent Bar - Using inline style for guaranteed visibility */}
-                <div style={{ width: '8px', backgroundColor: accentColor, height: '100%', borderRadius: '4px 0 0 4px' }} />
-
+              {/* Left Accent Bar - First Child */}
+              <div
+                style={{
+                  width: '8px',
+                  backgroundColor: accentColor,
+                  height: '100%',
+                  flexShrink: 0,
+                  border: '2px solid red', // DEBUG: Remove after verification
+                }}
+              />
+              {/* Content Wrapper */}
+              <div className="flex-1 p-4 flex items-center">
                 {/* Icon */}
                 <div className="flex-shrink-0">
                   <IconPin className="w-6 h-6 text-gray-400" />
