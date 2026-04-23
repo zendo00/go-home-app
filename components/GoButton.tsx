@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { cn } from "@/lib/utils";
-import AddressModal from './AddressModal';
+import GoMenuModal from './GoMenuModal';
 import { Locale, t } from '@/locales';
 
 interface GoButtonProps {
@@ -10,20 +10,13 @@ interface GoButtonProps {
 }
 
 export default function GoButton({ locale }: GoButtonProps) {
-  const [showModal, setShowModal] = useState(false);
-
-  const handleConfirm = (address: string) => {
-    setShowModal(false);
-    const encodedAddress = encodeURIComponent(address);
-    // 直接導航到目的地，不保存地址，不顯示 Toast
-    window.location.href = `geo:0,0?q=${encodedAddress}`;
-  };
+  const [showMenuModal, setShowMenuModal] = useState(false);
 
   return (
     <>
       <button
         className="relative w-[90%] max-w-[400px] h-[140px] group focus:outline-none mx-auto"
-        onClick={() => setShowModal(true)}
+        onClick={() => setShowMenuModal(true)}
         aria-label="GO"
       >
         {/* 箭頭形狀背景 - 調整為視覺平衡的對稱設計 */}
@@ -60,15 +53,10 @@ export default function GoButton({ locale }: GoButtonProps) {
         </div>
       </button>
 
-      {/* Go 按鈕使用獨立的 Modal，標題為「請輸入目的地」，無預覽 */}
-      <AddressModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        onConfirm={handleConfirm}
-        title={t('modal.destination', locale)}
-        placeholder={locale === 'en' ? 'Enter your destination (e.g., 12th Floor, ICC, Central)' : locale === 'zh-CN' ? '输入你的目的地（例如：中环国际金融中心）' : '輸入你的目的地（例如：中環國際金融中心）'}
-        showPreview={false}
-        isGoButton={true}
+      {/* Go 按鈕使用主選單模態框 */}
+      <GoMenuModal
+        isOpen={showMenuModal}
+        onClose={() => setShowMenuModal(false)}
         locale={locale}
       />
     </>

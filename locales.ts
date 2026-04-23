@@ -49,6 +49,30 @@ export const translations = {
     'legal.termsTitle': '使用條款',
     'legal.contactTitle': '聯絡我們',
     'legal.aboutTitle': '關於 Go Home',
+    
+    // Menu
+    'menu.savedLocations': '常用地點',
+    'menu.manageLocations': '新增地點',
+    'menu.enterDestination': '輸入地址',
+    'menu.noSavedLocations': '暫存常用地點',
+    'menu.goManageToAdd': '前往「新增地點」添加',
+    'menu.noLocationsToManage': '暫無地點可管理',
+    'menu.confirmDelete': '確定要刪除此地點嗎？',
+    'menu.dragToReorder': '拖拽項目以重新排序',
+    'menu.addNewLocation': '新增地點',
+    'menu.editLocation': '編輯地點',
+    'menu.addLocation': '新增',
+    'menu.saveChanges': '保存修改',
+    'menu.locationName': '名稱',
+    'menu.locationNamePlaceholder': '例如：公司、茶餐廳',
+    'menu.locationAddress': '地址',
+    'menu.locationAddressPlaceholder': '輸入完整地址',
+    'menu.fillAllFields': '請填寫所有欄位',
+    
+    // Common
+    'common.back': '返回',
+    'common.delete': '刪除',
+    'common.cancel': '取消',
   },
   
   'zh-CN': {
@@ -93,6 +117,30 @@ export const translations = {
     'legal.termsTitle': '使用条款',
     'legal.contactTitle': '联系我们',
     'legal.aboutTitle': '关于 Go Home',
+    
+    // Menu
+    'menu.savedLocations': 'Saved Locations',
+    'menu.manageLocations': 'Manage Locations',
+    'menu.enterDestination': 'Enter Destination',
+    'menu.noSavedLocations': 'No saved locations',
+    'menu.goManageToAdd': 'Go to "Manage Locations" to add',
+    'menu.noLocationsToManage': 'No locations to manage',
+    'menu.confirmDelete': 'Are you sure you want to delete this location?',
+    'menu.dragToReorder': 'Drag items to reorder',
+    'menu.addNewLocation': 'Add New Location',
+    'menu.editLocation': 'Edit Location',
+    'menu.addLocation': 'Add',
+    'menu.saveChanges': 'Save Changes',
+    'menu.locationName': 'Name',
+    'menu.locationNamePlaceholder': 'e.g., Office, Cafe',
+    'menu.locationAddress': 'Address',
+    'menu.locationAddressPlaceholder': 'Enter full address',
+    'menu.fillAllFields': 'Please fill in all fields',
+    
+    // Common
+    'common.back': 'Back',
+    'common.delete': 'Delete',
+    'common.cancel': 'Cancel',
   },
   
   'en': {
@@ -137,6 +185,30 @@ export const translations = {
     'legal.termsTitle': 'Terms of Use',
     'legal.contactTitle': 'Contact Us',
     'legal.aboutTitle': 'About Go Home',
+    
+    // Menu
+    'menu.savedLocations': '常用地點',
+    'menu.manageLocations': '管理地點',
+    'menu.enterDestination': '輸入地址',
+    'menu.noSavedLocations': '暫存常用地點',
+    'menu.goManageToAdd': '前往「管理地點」添加',
+    'menu.noLocationsToManage': '暫無地點可管理',
+    'menu.confirmDelete': '確定要刪除此地點嗎？',
+    'menu.dragToReorder': '拖拽項目以重新排序',
+    'menu.addNewLocation': '新增地點',
+    'menu.editLocation': '編輯地點',
+    'menu.addLocation': '新增',
+    'menu.saveChanges': '保存修改',
+    'menu.locationName': '名稱',
+    'menu.locationNamePlaceholder': '例如：公司、茶餐廳',
+    'menu.locationAddress': '地址',
+    'menu.locationAddressPlaceholder': '輸入完整地址',
+    'menu.fillAllFields': '請填寫所有欄位',
+    
+    // Common
+    'common.back': '返回',
+    'common.delete': '刪除',
+    'common.cancel': '取消',
   },
 };
 
