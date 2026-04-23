@@ -129,23 +129,6 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
     onBack();
   };
 
-  if (locations.length === 0 && editingId === null) {
-    return (
-      <div className="flex flex-col items-center justify-center py-8 text-gray-900">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="gray" strokeWidth="1.5" className="mb-4 opacity-50">
-          <path d="M12 20v-6M6 20V10M18 20V4" />
-        </svg>
-        <p className="text-lg mb-6">{t('menu.noLocationsToManage', locale)}</p>
-        <button
-          onClick={handleBack}
-          className="px-8 py-4 bg-gray-200 hover:bg-gray-300 rounded-xl text-gray-900 font-bold text-xl transition-all duration-200 active:scale-95"
-        >
-          {t('common.back', locale)}
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4">
       {/* Back Button */}
@@ -187,7 +170,15 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
 
       {/* Locations List */}
       <div className="space-y-3">
-        {locations.map((location, index) => (
+        {locations.length === 0 && editingId === null ? (
+          <div className="flex flex-col items-center justify-center py-8 text-gray-900">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="gray" strokeWidth="1.5" className="mb-4 opacity-50">
+              <path d="M12 20v-6M6 20V10M18 20V4" />
+            </svg>
+            <p className="text-lg">{t('menu.noLocationsToManage', locale)}</p>
+          </div>
+        ) : (
+          locations.map((location, index) => (
           <div
             key={location.id}
             ref={(el) => {
@@ -280,7 +271,7 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
               </div>
             )}
           </div>
-        ))}
+        )))}
       </div>
 
       {/* Drag Hint */}
