@@ -15,7 +15,7 @@ interface ManageLocationsViewProps {
   onBack: () => void;
 }
 
-// Accent color palette for left bars (Hex codes for inline styles)
+// Accent color palette for top borders (Hex codes for inline styles)
 const ACCENT_COLORS = [
   '#2563EB', // Blue
   '#16A34A', // Green
@@ -298,29 +298,6 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
 
       {/* Scrollable Cards Container */}
       <div className="max-h-[60vh] overflow-y-auto space-y-3">
-        {/* 🔴 MINIMAL TEST CARD - DIAGNOSTIC ONLY */}
-        <div className="flex items-stretch border-2 border-red-500 mb-4 bg-white p-2">
-          {/* Colored Bar - Hardcoded with inline styles AND text */}
-          <div
-            style={{
-              width: '20px', // Make it wider for testing
-              backgroundColor: '#FF0000', // Bright red
-              height: '100%',
-              display: 'block',
-              flexShrink: 0,
-              border: '2px solid blue', // Blue border to confirm element exists
-            }}
-          >
-            <span style={{ color: 'white', fontSize: '10px', writingMode: 'vertical-rl' }}>TEST</span>
-          </div>
-          {/* Simple Content */}
-          <div className="flex-1">
-            <p className="text-black font-bold">TEST CARD - IF YOU SEE THIS, STRUCTURE IS OK</p>
-            <p className="text-gray-500">Test Address</p>
-          </div>
-        </div>
-        {/* END TEST CARD */}
-
         {locations.length === 0 && !showAddForm && editingId === null ? (
           <div className="flex flex-col items-center justify-center py-12 text-gray-900">
             <IconPin className="w-16 h-16 text-gray-400 mb-4 opacity-50" />
@@ -333,58 +310,48 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
             return (
               <div
                 key={location.id}
-                className="flex items-stretch mb-3 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+                className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-3"
+                style={{ borderTop: `4px solid ${accentColor}` }}
               >
-                {/* Left Accent Bar - First Child */}
-                <div
-                  style={{
-                    width: '8px',
-                    backgroundColor: accentColor,
-                    height: '100%',
-                    flexShrink: 0,
-                    border: '2px solid red', // DEBUG: Remove after verification
-                  }}
-                />
+                <div className="p-4 flex items-center justify-between">
+                  {/* Left: Arrows + Icon + Name + Address */}
+                  <div className="flex items-center flex-1">
+                    {/* Up/Down Arrows on far left */}
+                    <div className="flex-shrink-0 flex flex-col gap-1 mr-2">
+                      <button
+                        onClick={() => moveUp(index)}
+                        disabled={index === 0}
+                        className="p-1.5 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                        aria-label="上移"
+                      >
+                        <IconArrowUp className="w-4 h-4 text-gray-600" />
+                      </button>
+                      <button
+                        onClick={() => moveDown(index)}
+                        disabled={index === locations.length - 1}
+                        className="p-1.5 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                        aria-label="下移"
+                      >
+                        <IconArrowDown className="w-4 h-4 text-gray-600" />
+                      </button>
+                    </div>
 
-                {/* Content Wrapper */}
-                <div className="flex-1 p-4 flex items-center justify-between">
-                  {/* Left Side: Up/Down Arrows */}
-                  <div className="flex-shrink-0 flex flex-col gap-1">
-                    <button
-                      onClick={() => moveUp(index)}
-                      disabled={index === 0}
-                      className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-                      aria-label="上移"
-                    >
-                      <IconArrowUp className="w-5 h-5 text-gray-600" />
-                    </button>
-                    <button
-                      onClick={() => moveDown(index)}
-                      disabled={index === locations.length - 1}
-                      className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-                      aria-label="下移"
-                    >
-                      <IconArrowDown className="w-5 h-5 text-gray-600" />
-                    </button>
+                    {/* Icon immediately before name */}
+                    <IconPin className="w-6 h-6 text-gray-400 mr-3 flex-shrink-0" />
+
+                    {/* Name + Address */}
+                    <div className="min-w-0 flex-1">
+                      <h4 className="text-lg font-bold text-gray-900 truncate">
+                        {location.label}
+                      </h4>
+                      <p className="text-sm text-gray-500 truncate">
+                        {location.address}
+                      </p>
+                    </div>
                   </div>
 
-                  {/* Icon */}
-                  <div className="flex-shrink-0">
-                    <IconPin className="w-6 h-6 text-gray-400" />
-                  </div>
-
-                  {/* Center: Name + Address */}
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-lg font-bold text-gray-900 mb-1">
-                      {location.label}
-                    </h4>
-                    <p className="text-sm text-gray-500 line-clamp-2">
-                      {location.address}
-                    </p>
-                  </div>
-
-                  {/* Right Side: Edit/Delete Buttons */}
-                  <div className="flex-shrink-0 flex gap-1">
+                  {/* Right: Edit/Delete Buttons */}
+                  <div className="flex items-center gap-3 flex-shrink-0">
                     <button
                       onClick={() => startEdit(location)}
                       className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
