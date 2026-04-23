@@ -111,7 +111,7 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
             >
               <div className="flex items-center gap-3 p-4">
                 {/* Left Accent Bar */}
-                <div className={`flex-shrink-0 w-1.5 ${accentColor}`} />
+                <div className={`flex-shrink-0 w-2 h-full ${accentColor} rounded-l-xl`} />
 
                 {/* Icon */}
                 <div className="flex-shrink-0">
