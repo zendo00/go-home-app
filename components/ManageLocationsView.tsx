@@ -8,6 +8,7 @@ interface Location {
   id: string;
   label: string;
   address: string;
+  colorIndex?: number;
 }
 
 interface ManageLocationsViewProps {
@@ -32,6 +33,17 @@ const getAccentColor = (index: number): string => {
   return ACCENT_COLORS[index % ACCENT_COLORS.length];
 };
 
+// Deterministic hash function to generate color index from location ID
+const hashToColorIndex = (id: string): number => {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    const char = id.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+  return Math.abs(hash) % ACCENT_COLORS.length;
+};
+
 export default function ManageLocationsView({ locale, onBack }: ManageLocationsViewProps) {
   const [locations, setLocations] = useState<Location[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -51,7 +63,18 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
       const saved = localStorage.getItem('savedLocations');
       if (saved) {
         try {
-          const parsed = JSON.parse(saved) as Location[];
+          let parsed = JSON.parse(saved) as Location[];
+          // Backward compatibility: assign colorIndex to locations that don't have it
+          const needsUpdate = parsed.some(loc => loc.colorIndex === undefined);
+          if (needsUpdate) {
+            parsed = parsed.map(loc => {
+              if (loc.colorIndex === undefined) {
+                return { ...loc, colorIndex: hashToColorIndex(loc.id) };
+              }
+              return loc;
+            });
+            localStorage.setItem('savedLocations', JSON.stringify(parsed));
+          }
           setLocations(parsed);
         } catch (e) {
           console.error('Failed to parse saved locations:', e);
@@ -87,6 +110,7 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
       id: generateId(),
       label: trimmedLabel,
       address: trimmedAddress,
+      colorIndex: Math.floor(Math.random() * ACCENT_COLORS.length),
     };
     const newLocations = [newLocation, ...locations];
     saveLocations(newLocations);
@@ -306,7 +330,8 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
           </div>
         ) : (
           locations.map((location, index) => {
-            const accentColor = getAccentColor(index);
+            const colorIndex = location.colorIndex ?? hashToColorIndex(location.id);
+            const accentColor = getAccentColor(colorIndex);
             return (
               <div
                 key={location.id}
