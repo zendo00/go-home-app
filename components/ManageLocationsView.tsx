@@ -131,14 +131,14 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
 
   if (locations.length === 0 && editingId === null) {
     return (
-      <div className="flex flex-col items-center justify-center py-8 text-white">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="mb-4 opacity-50">
+      <div className="flex flex-col items-center justify-center py-8 text-gray-900">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="gray" strokeWidth="1.5" className="mb-4 opacity-50">
           <path d="M12 20v-6M6 20V10M18 20V4" />
         </svg>
         <p className="text-lg mb-6">{t('menu.noLocationsToManage', locale)}</p>
         <button
           onClick={handleBack}
-          className="px-8 py-4 bg-white/10 hover:bg-white/20 rounded-xl text-white font-bold text-xl transition-all duration-200 active:scale-95"
+          className="px-8 py-4 bg-gray-200 hover:bg-gray-300 rounded-xl text-gray-900 font-bold text-xl transition-all duration-200 active:scale-95"
         >
           {t('common.back', locale)}
         </button>
@@ -151,7 +151,7 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
       {/* Back Button */}
       <button
         onClick={handleBack}
-        className="w-full flex items-center gap-3 text-white/70 hover:text-white transition-colors mb-2 py-3"
+        className="w-full flex items-center gap-3 text-gray-600 hover:text-gray-900 transition-colors mb-2 py-3"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -182,7 +182,7 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
 
       {/* Separator */}
       {editingId === null && locations.length > 0 && (
-        <div className="border-t border-white/10 my-4" />
+        <div className="border-t border-gray-200 my-4" />
       )}
 
       {/* Locations List */}
@@ -198,17 +198,17 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
             onDragOver={(e) => handleDragOver(e, index)}
             onDrop={(e) => handleDrop(e, index)}
             onDragEnd={handleDragEnd}
-            className={`bg-white/5 border rounded-xl p-4 transition-all duration-200 ${
+            className={`bg-gray-50 border rounded-xl p-4 transition-all duration-200 ${
               draggedIndex === index
                 ? 'opacity-50 border-dashed border-blue-400'
-                : 'border-white/10 hover:border-white/20'
+                : 'border-gray-200 hover:border-gray-300'
             }`}
           >
             {/* Confirm Delete State */}
             {showConfirmDelete === location.id ? (
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <p className="text-red-400 font-bold mb-3">
+                  <p className="text-red-600 font-bold mb-3">
                     {t('menu.confirmDelete', locale)}
                   </p>
                   <div className="flex gap-3">
@@ -220,7 +220,7 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
                     </button>
                     <button
                       onClick={() => setShowConfirmDelete(null)}
-                      className="flex-1 bg-white/10 hover:bg-white/20 text-white rounded-xl py-3 font-bold transition-colors"
+                      className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-900 rounded-xl py-3 font-bold transition-colors"
                     >
                       {t('common.cancel', locale)}
                     </button>
@@ -231,7 +231,7 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
               <div className="flex items-start gap-3">
                 {/* Drag Handle */}
                 {editingId === null && (
-                  <div className="flex-shrink-0 mt-2 cursor-grab active:cursor-grabbing text-white/30">
+                  <div className="flex-shrink-0 mt-2 cursor-grab active:cursor-grabbing text-gray-400">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                       <circle cx="8" cy="6" r="2" />
                       <circle cx="16" cy="6" r="2" />
@@ -245,10 +245,10 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-lg font-bold text-white mb-1">
+                  <h4 className="text-lg font-bold text-gray-900 mb-1">
                     {location.label}
                   </h4>
-                  <p className="text-base text-white/70 line-clamp-2">
+                  <p className="text-base text-gray-600 line-clamp-2">
                     {location.address}
                   </p>
                 </div>
@@ -256,25 +256,25 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
                 {/* Action Buttons */}
                 {editingId === null && (
                   <div className="flex-shrink-0 flex gap-2">
-                    <button
-                      onClick={() => handleEditClick(location)}
-                      className="p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors"
-                      aria-label="編輯"
-                    >
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
-                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
-                      </svg>
-                    </button>
-                    <button
-                      onClick={() => setShowConfirmDelete(location.id)}
-                      className="p-3 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors"
-                      aria-label="刪除"
-                    >
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-                      </svg>
-                    </button>
+                      <button
+                        onClick={() => handleEditClick(location)}
+                        className="p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors"
+                        aria-label="編輯"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => setShowConfirmDelete(location.id)}
+                        className="p-3 bg-red-600 hover:bg-red-700 text-white rounded-xl transition-colors"
+                        aria-label="刪除"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                        </svg>
+                      </button>
                   </div>
                 )}
               </div>
@@ -285,7 +285,7 @@ export default function ManageLocationsView({ locale, onBack }: ManageLocationsV
 
       {/* Drag Hint */}
       {editingId === null && locations.length > 1 && (
-        <p className="text-sm text-white/50 text-center mt-4">
+        <p className="text-sm text-gray-500 text-center mt-4">
           {t('menu.dragToReorder', locale)}
         </p>
       )}

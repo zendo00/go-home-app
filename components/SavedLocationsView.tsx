@@ -46,22 +46,22 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
 
   if (locations.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-white">
-        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="mb-4 opacity-50">
+      <div className="flex flex-col items-center justify-center py-12 text-gray-900">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="gray" strokeWidth="1.5" className="mb-4 opacity-50">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
           <circle cx="12" cy="10" r="3" />
         </svg>
         <p className="text-lg mb-2">{t('menu.noSavedLocations', locale)}</p>
-        <p className="text-sm opacity-75 mb-6">{t('menu.goManageToAdd', locale)}</p>
+        <p className="text-sm text-gray-600 mb-6">{t('menu.goManageToAdd', locale)}</p>
         <button
           onClick={onManage}
-          className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-xl text-white font-bold text-xl transition-all duration-200 active:scale-95 shadow-lg"
+          className="px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-xl text-white font-bold text-xl transition-all duration-200 active:scale-95 shadow-lg"
         >
           {t('menu.manageLocations', locale)}
         </button>
         <button
           onClick={onBack}
-          className="mt-4 px-8 py-4 bg-white/10 hover:bg-white/20 rounded-xl text-white font-bold text-xl transition-all duration-200 active:scale-95"
+          className="mt-4 px-8 py-4 bg-gray-200 hover:bg-gray-300 rounded-xl text-gray-900 font-bold text-xl transition-all duration-200 active:scale-95"
         >
           {t('common.back', locale)}
         </button>
@@ -74,7 +74,7 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
       {/* Back Button */}
       <button
         onClick={onBack}
-        className="w-full flex items-center gap-3 text-white/70 hover:text-white transition-colors mb-4 py-3"
+        className="w-full flex items-center gap-3 text-gray-600 hover:text-gray-900 transition-colors mb-4 py-3"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M19 12H5M12 19l-7-7 7-7" />
@@ -88,7 +88,7 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
           <button
             key={location.id}
             onClick={() => handleLocationClick(location)}
-            className="w-full text-left bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 active:from-blue-800 active:to-blue-900 rounded-xl p-5 transition-all duration-200 group shadow-lg"
+            className="w-full text-left bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl p-5 transition-all duration-200 group shadow-lg"
           >
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 mt-1">
@@ -101,7 +101,7 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
                 <h3 className="text-xl font-bold text-white mb-1">
                   {location.label}
                 </h3>
-                <p className="text-base text-white/80 line-clamp-2">
+                <p className="text-base text-white/90 line-clamp-2">
                   {location.address}
                 </p>
               </div>
@@ -118,7 +118,7 @@ export default function SavedLocationsView({ locale, onLocationSelect, onBack, o
       {/* Manage Button */}
       <button
         onClick={onManage}
-        className="w-full mt-4 px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 rounded-xl text-white font-bold text-xl transition-all duration-200 active:scale-95 shadow-lg"
+        className="w-full mt-4 px-8 py-4 bg-green-600 hover:bg-green-700 rounded-xl text-white font-bold text-xl transition-all duration-200 active:scale-95 shadow-lg"
       >
         {t('menu.manageLocations', locale)}
       </button>

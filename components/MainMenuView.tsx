@@ -42,12 +42,12 @@ export default function MainMenuView({ locale, onNavigate }: MainMenuViewProps) 
   ];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 px-4">
       {menuItems.map((item) => (
         <button
           key={item.id}
           onClick={() => onNavigate(item.id)}
-          className="relative w-full h-[140px] group focus:outline-none"
+          className="relative w-[90%] max-w-[400px] h-[140px] group focus:outline-none mx-auto"
           aria-label={item.label}
         >
           <svg
